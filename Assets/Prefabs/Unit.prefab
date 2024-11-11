@@ -97,9 +97,10 @@ GameObject:
   - component: {fileID: 5842568132233746971}
   - component: {fileID: 6963744988532450062}
   - component: {fileID: 8303485790925459407}
+  - component: {fileID: 7680732348990036010}
   - component: {fileID: 2145407051553217145}
   - component: {fileID: 8619547693802221403}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Unit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -151,6 +152,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   visualGameObject: {fileID: 3161443675359633326}
   showScale: 2
+--- !u!114 &7680732348990036010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2919242003866112882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432f5ca393a91b8448c78ce3bbf17cdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!136 &2145407051553217145
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -166,7 +179,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
