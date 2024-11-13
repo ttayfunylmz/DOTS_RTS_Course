@@ -1,6 +1,7 @@
 using System;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
@@ -37,10 +38,14 @@ public class UnitSelectionManager : MonoBehaviour
                 .WithAll<Selected>().Build(entityManager);
 
             NativeArray<Entity> entityArray = entityQuery.ToEntityArray(Allocator.Temp);
+            NativeArray<Selected> selectedArray = entityQuery.ToComponentDataArray<Selected>(Allocator.Temp);
 
             for(int i = 0; i < entityArray.Length; ++i)
             {
                 entityManager.SetComponentEnabled<Selected>(entityArray[i], false);
+                Selected selected = selectedArray[i];
+                selected.onDeselected = true;
+                entityManager.SetComponentData(entityArray[i], selected);
             }
             
             Rect selectionAreaRect = GetSelectionAreaRect();
@@ -66,6 +71,9 @@ public class UnitSelectionManager : MonoBehaviour
                     if(selectionAreaRect.Contains(unitScreenPosition))
                     {
                         entityManager.SetComponentEnabled<Selected>(entityArray[i], true);
+                        Selected selected = entityManager.GetComponentData<Selected>(entityArray[i]);
+                        selected.onSelected = true;
+                        entityManager.SetComponentData(entityArray[i], selected);
                     } 
                 }
             }
@@ -96,6 +104,9 @@ public class UnitSelectionManager : MonoBehaviour
                     if(entityManager.HasComponent<Unit>(raycastHit.Entity)) // HIT A UNIT
                     {
                         entityManager.SetComponentEnabled<Selected>(raycastHit.Entity, true);
+                        Selected selected = entityManager.GetComponentData<Selected>(raycastHit.Entity);
+                        selected.onSelected = true;
+                        entityManager.SetComponentData(raycastHit.Entity, selected);
                     }
                 }
             }
@@ -115,10 +126,12 @@ public class UnitSelectionManager : MonoBehaviour
             NativeArray<UnitMover> unitMoverArray =
                 entityQuery.ToComponentDataArray<UnitMover>(Allocator.Temp);
 
+            NativeArray<float3> movePositionArray = GenerateMovePositionArray(mouseWorldPosition, entityArray.Length);
+
             for(int i = 0; i < unitMoverArray.Length; ++i)
             {
                 UnitMover unitMover = unitMoverArray[i];
-                unitMover.targetPosition = mouseWorldPosition;
+                unitMover.targetPosition = movePositionArray[i];
                 unitMoverArray[i] = unitMover;
             }
             entityQuery.CopyFromComponentDataArray(unitMoverArray);
@@ -149,4 +162,40 @@ public class UnitSelectionManager : MonoBehaviour
             upperRightCorner.y - lowerLeftCorner.y
         );
     }
+
+    private NativeArray<float3> GenerateMovePositionArray(float3 targetPosition, int positionCount)
+    {
+        NativeArray<float3> positionArray = new NativeArray<float3>(positionCount, Allocator.Temp);
+
+        if(positionCount == 0) { return positionArray; }
+
+        positionArray[0] = targetPosition;
+
+        if(positionCount == 1) { return positionArray; }
+
+        float ringSize = 2.2f;
+        int ring = 0;
+        int positionIndex = 1;
+
+        while(positionIndex < positionCount)
+        {
+            int ringPositionCount = 3 + ring * 2;
+
+            for(int i = 0; i < ringPositionCount; ++i)
+            {
+                float angle = i * (math.PI2 / ringPositionCount);
+                float3 ringVector = math.rotate(quaternion.RotateY(angle), new float3(ringSize * (ring + 1), 0, 0));
+                float3 ringPosition = targetPosition + ringVector;
+
+                positionArray[positionIndex] = ringPosition;
+                positionIndex++;
+
+                if(positionIndex >= positionCount) { break; }
+            }
+
+            ring++;
+        }
+
+        return positionArray;
+    } 
 }
