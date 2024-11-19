@@ -19,7 +19,9 @@ partial struct ShootAttackSystem : ISystem
             if(shootAttack.ValueRO.timer > 0f) { continue; }
             shootAttack.ValueRW.timer = shootAttack.ValueRO.timerMax;
 
-            Debug.Log("Shoot!");
+            RefRW<Health> targetHealth = SystemAPI.GetComponentRW<Health>(target.ValueRO.targetEntity);
+            int damageAmount = 1;
+            targetHealth.ValueRW.healthAmount -= damageAmount;
         }
 
     }
