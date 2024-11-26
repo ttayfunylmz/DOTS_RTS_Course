@@ -18,15 +18,23 @@ partial struct FindTargetSystem : ISystem
         foreach ((
             RefRO<LocalTransform> localTransform,
             RefRW<FindTarget> findTarget,
-            RefRW<Target> target)
+            RefRW<Target> target,
+            RefRO<TargetOverride> targetOverride)
                 in SystemAPI.Query<
                     RefRO<LocalTransform>,
                     RefRW<FindTarget>,
-                    RefRW<Target>>())
+                    RefRW<Target>,
+                    RefRO<TargetOverride>>())
         {
             findTarget.ValueRW.timer -= SystemAPI.Time.DeltaTime;
             if(findTarget.ValueRO.timer > 0f) { continue; }
             findTarget.ValueRW.timer = findTarget.ValueRO.timerMax;
+
+            if(targetOverride.ValueRO.targetEntity != Entity.Null)
+            {
+                target.ValueRW.targetEntity = targetOverride.ValueRO.targetEntity;
+                continue;
+            }
 
             distanceHitList.Clear();
 
