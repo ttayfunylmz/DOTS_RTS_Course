@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b21a3f9a0e046e468349ba9742ece2f, type: 3}
+  m_Name: Soldier_Idle
+  m_EditorClassIdentifier: 
+  meshArray:
+  - {fileID: 4300000, guid: 3e67c8e712f2b5040aaaeb8eb2492345, type: 2}
+  - {fileID: 4300000, guid: 94ffd3753a934114d9fb144c7cb75e89, type: 2}
+  frameTimerMax: 0.5
