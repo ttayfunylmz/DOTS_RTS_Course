@@ -23,29 +23,27 @@ partial struct ActiveAnimationSystem : ISystem
                     RefRW<ActiveAnimation>,
                     RefRW<MaterialMeshInfo>>())
         {
-            if(!activeAnimation.ValueRO.animationDataBlobAssetReference.IsCreated)
-            {
-                activeAnimation.ValueRW.animationDataBlobAssetReference = animationDataHolder.soldierIdle;
-            }
-
             if(Input.GetKeyDown(KeyCode.T))
             {
-                activeAnimation.ValueRW.animationDataBlobAssetReference = animationDataHolder.soldierIdle;
+                activeAnimation.ValueRW.nextAnimationType = AnimationDataSO.AnimationType.SoldierIdle;
             }
 
             if(Input.GetKeyDown(KeyCode.Y))
             {
-                activeAnimation.ValueRW.animationDataBlobAssetReference = animationDataHolder.soldierWalk;
+                activeAnimation.ValueRW.nextAnimationType = AnimationDataSO.AnimationType.SoldierWalk;
             }
 
+            ref AnimationData animationData
+                = ref animationDataHolder.animationDataBlobArrayBlobAssetReference.Value[(int)activeAnimation.ValueRW.activeAnimationType];
+
             activeAnimation.ValueRW.frameTimer += SystemAPI.Time.DeltaTime;
-            if(activeAnimation.ValueRW.frameTimer > activeAnimation.ValueRO.animationDataBlobAssetReference.Value.frameTimerMax)
+            if(activeAnimation.ValueRW.frameTimer > animationData.frameTimerMax)
             {
-                activeAnimation.ValueRW.frameTimer -= activeAnimation.ValueRO.animationDataBlobAssetReference.Value.frameTimerMax;
-                activeAnimation.ValueRW.frame = (activeAnimation.ValueRW.frame + 1) % activeAnimation.ValueRO.animationDataBlobAssetReference.Value.frameMax;
+                activeAnimation.ValueRW.frameTimer -= animationData.frameTimerMax;
+                activeAnimation.ValueRW.frame = (activeAnimation.ValueRW.frame + 1) % animationData.frameMax;
 
                 materialMeshInfo.ValueRW.MeshID
-                    = activeAnimation.ValueRO.animationDataBlobAssetReference.Value.batchMeshIdBlobArray[activeAnimation.ValueRW.frame];
+                    = animationData.batchMeshIdBlobArray[activeAnimation.ValueRW.frame];
             }
         }
     }

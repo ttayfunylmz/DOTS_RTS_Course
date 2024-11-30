@@ -6,8 +6,7 @@ using UnityEngine.Rendering;
 
 public class AnimationDataHolderAuthoring : MonoBehaviour
 {
-    public AnimationDataSO soldierIdle;
-    public AnimationDataSO soldierWalk;
+    public AnimationDataListSO animationDataListSO;
 
     public class Baker : Baker<AnimationDataHolderAuthoring>
     {
@@ -19,49 +18,38 @@ public class AnimationDataHolderAuthoring : MonoBehaviour
             EntitiesGraphicsSystem entitiesGraphicsSystem 
                 = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<EntitiesGraphicsSystem>();
 
+            BlobBuilder blobBuilder = new BlobBuilder(Allocator.Temp);
+            ref BlobArray<AnimationData> animationDataBlobArray = ref blobBuilder.ConstructRoot<BlobArray<AnimationData>>();
+
+            BlobBuilderArray<AnimationData> animationDataBlobBuilderArray
+                = blobBuilder.Allocate<AnimationData>(ref animationDataBlobArray, System.Enum.GetValues(typeof(AnimationDataSO.AnimationType)).Length);
+
+            int index = 0;
+            foreach(AnimationDataSO.AnimationType animationType in System.Enum.GetValues(typeof(AnimationDataSO.AnimationType)))
             {
-                BlobBuilder blobBuilder = new BlobBuilder(Allocator.Temp);
-                ref AnimationData animationData = ref blobBuilder.ConstructRoot<AnimationData>();
-                animationData.frameTimerMax = authoring.soldierIdle.frameTimerMax;
-                animationData.frameMax = authoring.soldierIdle.meshArray.Length;
+                AnimationDataSO animationDataSO = authoring.animationDataListSO.GetAnimationDataSO(animationType);
 
                 BlobBuilderArray<BatchMeshID> blobBuilderArray
-                    = blobBuilder.Allocate<BatchMeshID>(ref animationData.batchMeshIdBlobArray, authoring.soldierIdle.meshArray.Length);
+                    = blobBuilder.Allocate<BatchMeshID>(ref animationDataBlobBuilderArray[index].batchMeshIdBlobArray, animationDataSO.meshArray.Length);
 
-                for(int i = 0; i < authoring.soldierIdle.meshArray.Length; ++i)
+                animationDataBlobBuilderArray[index].frameTimerMax = animationDataSO.frameTimerMax;
+                animationDataBlobBuilderArray[index].frameMax = animationDataSO.meshArray.Length;
+
+                for(int i = 0; i < animationDataSO.meshArray.Length; ++i)
                 {
-                    Mesh mesh = authoring.soldierIdle.meshArray[i];
+                    Mesh mesh = animationDataSO.meshArray[i];
                     blobBuilderArray[i] = entitiesGraphicsSystem.RegisterMesh(mesh);
                 }
 
-                animationDataHolder.soldierIdle = blobBuilder.CreateBlobAssetReference<AnimationData>(Allocator.Persistent);
-
-                blobBuilder.Dispose();
-
-                AddBlobAsset(ref animationDataHolder.soldierIdle, out Unity.Entities.Hash128 objectHash);
+                index++;
             }
 
-            {
-                BlobBuilder blobBuilder = new BlobBuilder(Allocator.Temp);
-                ref AnimationData animationData = ref blobBuilder.ConstructRoot<AnimationData>();
-                animationData.frameTimerMax = authoring.soldierWalk.frameTimerMax;
-                animationData.frameMax = authoring.soldierWalk.meshArray.Length;
+            animationDataHolder.animationDataBlobArrayBlobAssetReference
+                = blobBuilder.CreateBlobAssetReference<BlobArray<AnimationData>>(Allocator.Persistent);
 
-                BlobBuilderArray<BatchMeshID> blobBuilderArray
-                    = blobBuilder.Allocate<BatchMeshID>(ref animationData.batchMeshIdBlobArray, authoring.soldierWalk.meshArray.Length);
+            blobBuilder.Dispose();
 
-                for(int i = 0; i < authoring.soldierWalk.meshArray.Length; ++i)
-                {
-                    Mesh mesh = authoring.soldierWalk.meshArray[i];
-                    blobBuilderArray[i] = entitiesGraphicsSystem.RegisterMesh(mesh);
-                }
-
-                animationDataHolder.soldierWalk = blobBuilder.CreateBlobAssetReference<AnimationData>(Allocator.Persistent);
-
-                blobBuilder.Dispose();
-
-                AddBlobAsset(ref animationDataHolder.soldierWalk, out Unity.Entities.Hash128 objectHash);
-            }
+            AddBlobAsset(ref animationDataHolder.animationDataBlobArrayBlobAssetReference, out Unity.Entities.Hash128 objectHash);
 
             AddComponent(entity, animationDataHolder);
         }
@@ -70,8 +58,7 @@ public class AnimationDataHolderAuthoring : MonoBehaviour
 
 public struct AnimationDataHolder : IComponentData
 {
-    public BlobAssetReference<AnimationData> soldierIdle;
-    public BlobAssetReference<AnimationData> soldierWalk;
+    public BlobAssetReference<BlobArray<AnimationData>> animationDataBlobArrayBlobAssetReference;
 }
 
 public struct AnimationData

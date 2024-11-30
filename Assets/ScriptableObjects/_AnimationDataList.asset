@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d431ecdffea0614a84f55c40ed78d30, type: 3}
+  m_Name: _AnimationDataList
+  m_EditorClassIdentifier: 
+  animationDataSOList:
+  - {fileID: 11400000, guid: b52ae82d291767b43b7fc6052752aa2c, type: 2}
+  - {fileID: 11400000, guid: 73170b1f910a2714c8f66c27d218e67d, type: 2}
+  - {fileID: 11400000, guid: b4cf5aa351f48cc4988912576b5ceb61, type: 2}

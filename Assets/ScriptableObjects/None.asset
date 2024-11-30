@@ -10,12 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b21a3f9a0e046e468349ba9742ece2f, type: 3}
-  m_Name: Soldier_Walk
+  m_Name: None
   m_EditorClassIdentifier: 
-  animationType: 2
-  meshArray:
-  - {fileID: 4300000, guid: 6e5308bd925f70147803dd3d808d5357, type: 2}
-  - {fileID: 4300000, guid: a94861c5d00b76c4bb31d76aec734804, type: 2}
-  - {fileID: 4300000, guid: be41e1bbabac24f4cb0f8c19897d1bd0, type: 2}
-  - {fileID: 4300000, guid: 7e80bf640308aba4bb8137f21eac07a9, type: 2}
-  frameTimerMax: 0.2
+  animationType: 0
+  meshArray: []
+  frameTimerMax: 0
