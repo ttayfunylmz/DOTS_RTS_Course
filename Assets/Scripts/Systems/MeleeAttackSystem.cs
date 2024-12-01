@@ -79,6 +79,7 @@ partial struct MeleeAttackSystem : ISystem
                 targetHealth.ValueRW.healthAmount -= meleeAttack.ValueRO.damageAmount;
                 targetHealth.ValueRW.onHealthChanged = true;
 
+                meleeAttack.ValueRW.onAttacked = true;
             }
         }
     }

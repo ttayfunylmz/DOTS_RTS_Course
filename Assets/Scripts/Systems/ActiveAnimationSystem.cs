@@ -23,16 +23,6 @@ partial struct ActiveAnimationSystem : ISystem
                     RefRW<ActiveAnimation>,
                     RefRW<MaterialMeshInfo>>())
         {
-            if(Input.GetKeyDown(KeyCode.T))
-            {
-                activeAnimation.ValueRW.nextAnimationType = AnimationDataSO.AnimationType.SoldierIdle;
-            }
-
-            if(Input.GetKeyDown(KeyCode.Y))
-            {
-                activeAnimation.ValueRW.nextAnimationType = AnimationDataSO.AnimationType.SoldierWalk;
-            }
-
             ref AnimationData animationData
                 = ref animationDataHolder.animationDataBlobArrayBlobAssetReference.Value[(int)activeAnimation.ValueRW.activeAnimationType];
 
@@ -44,6 +34,18 @@ partial struct ActiveAnimationSystem : ISystem
 
                 materialMeshInfo.ValueRW.MeshID
                     = animationData.batchMeshIdBlobArray[activeAnimation.ValueRW.frame];
+
+                if(activeAnimation.ValueRO.frame == 0 &&
+                    activeAnimation.ValueRO.activeAnimationType == AnimationDataSO.AnimationType.SoldierShoot)
+                {
+                    activeAnimation.ValueRW.activeAnimationType = AnimationDataSO.AnimationType.None;
+                }
+
+                if(activeAnimation.ValueRO.frame == 0 &&
+                    activeAnimation.ValueRO.activeAnimationType == AnimationDataSO.AnimationType.ZombieAttack)
+                {
+                    activeAnimation.ValueRW.activeAnimationType = AnimationDataSO.AnimationType.None;
+                }
             }
         }
     }

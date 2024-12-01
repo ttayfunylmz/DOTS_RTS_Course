@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b21a3f9a0e046e468349ba9742ece2f, type: 3}
+  m_Name: Zombie_Idle
+  m_EditorClassIdentifier: 
+  animationType: 3
+  meshArray:
+  - {fileID: 4300000, guid: 704f5ea696ef75944b30d5c8ec37f428, type: 2}
+  - {fileID: 4300000, guid: df8fb447f0ed85645b85d4f14274d82c, type: 2}
+  - {fileID: 4300000, guid: 57e97f108cef90448a9bd096ce862f2b, type: 2}
+  - {fileID: 4300000, guid: 4661aaf9b1976d141aa8fe113d423529, type: 2}
+  frameTimerMax: 0.5

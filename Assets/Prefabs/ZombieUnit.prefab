@@ -39,6 +39,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2121757610173279991, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+      propertyPath: idleAnimationType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2121757610173279991, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+      propertyPath: walkAnimationType
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2121757610173279991, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+      propertyPath: meleeAttackAnimationType
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 2592619654568191189, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
