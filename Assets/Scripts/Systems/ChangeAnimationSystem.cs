@@ -6,38 +6,51 @@ using Unity.Rendering;
 partial struct ChangeAnimationSystem : ISystem
 {
     [BurstCompile]
+    public void OnCreate(ref SystemState state)
+    {
+        state.RequireForUpdate<AnimationDataHolder>();
+    }
+
+    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         AnimationDataHolder animationDataHolder = SystemAPI.GetSingleton<AnimationDataHolder>();
 
-        foreach ((
-            RefRW<ActiveAnimation> activeAnimation,
-            RefRW<MaterialMeshInfo> materialMeshInfo)
-                in SystemAPI.Query<
-                    RefRW<ActiveAnimation>,
-                    RefRW<MaterialMeshInfo>>())
+        ChangeAnimationJob changeAnimationJob = new ChangeAnimationJob
         {
-            if(activeAnimation.ValueRO.activeAnimationType == AnimationDataSO.AnimationType.SoldierShoot)
-            {
-                continue;
-            }
+            animationDataBlobArrayBlobAssetReference = animationDataHolder.animationDataBlobArrayBlobAssetReference
+        };
 
-            if(activeAnimation.ValueRO.activeAnimationType == AnimationDataSO.AnimationType.ZombieAttack)
-            {
-                continue;
-            }
+        changeAnimationJob.ScheduleParallel();
+    }
+}
 
-            if(activeAnimation.ValueRO.activeAnimationType != activeAnimation.ValueRO.nextAnimationType)
-            {
-                activeAnimation.ValueRW.frame = 0;
-                activeAnimation.ValueRW.frameTimer = 0f;
-                activeAnimation.ValueRW.activeAnimationType = activeAnimation.ValueRO.nextAnimationType;
+public partial struct ChangeAnimationJob : IJobEntity
+{
+    public BlobAssetReference<BlobArray<AnimationData>> animationDataBlobArrayBlobAssetReference;
 
-                ref AnimationData animationData
-                    = ref animationDataHolder.animationDataBlobArrayBlobAssetReference.Value[(int)activeAnimation.ValueRW.activeAnimationType];
+    public void Execute(ref ActiveAnimation activeAnimation, ref MaterialMeshInfo materialMeshInfo)
+    {
+        if (activeAnimation.activeAnimationType == AnimationDataSO.AnimationType.SoldierShoot)
+        {
+            return;
+        }
 
-                materialMeshInfo.ValueRW.MeshID = animationData.batchMeshIdBlobArray[0];
-            }
+        if (activeAnimation.activeAnimationType == AnimationDataSO.AnimationType.ZombieAttack)
+        {
+            return;
+        }
+
+        if (activeAnimation.activeAnimationType != activeAnimation.nextAnimationType)
+        {
+            activeAnimation.frame = 0;
+            activeAnimation.frameTimer = 0f;
+            activeAnimation.activeAnimationType = activeAnimation.nextAnimationType;
+
+            ref AnimationData animationData
+                = ref animationDataBlobArrayBlobAssetReference.Value[(int)activeAnimation.activeAnimationType];
+
+            materialMeshInfo.Mesh = animationData.intMeshIdBlobArray[0];
         }
     }
 }

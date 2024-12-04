@@ -15,37 +15,47 @@ partial struct ActiveAnimationSystem : ISystem
     public void OnUpdate(ref SystemState state)
     {
         AnimationDataHolder animationDataHolder = SystemAPI.GetSingleton<AnimationDataHolder>();
-
-        foreach ((
-            RefRW<ActiveAnimation> activeAnimation,
-            RefRW<MaterialMeshInfo> materialMeshInfo)
-                in SystemAPI.Query<
-                    RefRW<ActiveAnimation>,
-                    RefRW<MaterialMeshInfo>>())
+        
+        ActiveAnimationJob activeAnimationJob = new ActiveAnimationJob
         {
-            ref AnimationData animationData
-                = ref animationDataHolder.animationDataBlobArrayBlobAssetReference.Value[(int)activeAnimation.ValueRW.activeAnimationType];
+            deltaTime = SystemAPI.Time.DeltaTime,
+            animationDataBlobArrayBlobAssetReference = animationDataHolder.animationDataBlobArrayBlobAssetReference
+        };
 
-            activeAnimation.ValueRW.frameTimer += SystemAPI.Time.DeltaTime;
-            if(activeAnimation.ValueRW.frameTimer > animationData.frameTimerMax)
+        activeAnimationJob.ScheduleParallel();
+    }
+}
+
+[BurstCompile]
+public partial struct ActiveAnimationJob : IJobEntity
+{
+    public float deltaTime;
+    public BlobAssetReference<BlobArray<AnimationData>> animationDataBlobArrayBlobAssetReference;
+
+    public void Execute(ref ActiveAnimation activeAnimation, ref MaterialMeshInfo materialMeshInfo)
+    {
+        ref AnimationData animationData
+            = ref animationDataBlobArrayBlobAssetReference.Value[(int)activeAnimation.activeAnimationType];
+
+        activeAnimation.frameTimer += deltaTime;
+        if (activeAnimation.frameTimer > animationData.frameTimerMax)
+        {
+            activeAnimation.frameTimer -= animationData.frameTimerMax;
+            activeAnimation.frame = (activeAnimation.frame + 1) % animationData.frameMax;
+
+            materialMeshInfo.Mesh
+                = animationData.intMeshIdBlobArray[activeAnimation.frame];
+
+            if (activeAnimation.frame == 0 &&
+                activeAnimation.activeAnimationType == AnimationDataSO.AnimationType.SoldierShoot)
             {
-                activeAnimation.ValueRW.frameTimer -= animationData.frameTimerMax;
-                activeAnimation.ValueRW.frame = (activeAnimation.ValueRW.frame + 1) % animationData.frameMax;
+                activeAnimation.activeAnimationType = AnimationDataSO.AnimationType.None;
+            }
 
-                materialMeshInfo.ValueRW.MeshID
-                    = animationData.batchMeshIdBlobArray[activeAnimation.ValueRW.frame];
-
-                if(activeAnimation.ValueRO.frame == 0 &&
-                    activeAnimation.ValueRO.activeAnimationType == AnimationDataSO.AnimationType.SoldierShoot)
-                {
-                    activeAnimation.ValueRW.activeAnimationType = AnimationDataSO.AnimationType.None;
-                }
-
-                if(activeAnimation.ValueRO.frame == 0 &&
-                    activeAnimation.ValueRO.activeAnimationType == AnimationDataSO.AnimationType.ZombieAttack)
-                {
-                    activeAnimation.ValueRW.activeAnimationType = AnimationDataSO.AnimationType.None;
-                }
+            if (activeAnimation.frame == 0 &&
+                activeAnimation.activeAnimationType == AnimationDataSO.AnimationType.ZombieAttack)
+            {
+                activeAnimation.activeAnimationType = AnimationDataSO.AnimationType.None;
             }
         }
     }

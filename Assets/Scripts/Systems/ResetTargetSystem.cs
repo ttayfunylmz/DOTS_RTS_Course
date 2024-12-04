@@ -37,30 +37,6 @@ partial struct ResetTargetSystem : ISystem
         };
 
         resetTargetOverrideJob.ScheduleParallel();
-
-        // foreach(RefRW<Target> target in SystemAPI.Query<RefRW<Target>>())
-        // {
-        //     if(target.ValueRW.targetEntity != null)
-        //     {
-        //         if(!SystemAPI.Exists(target.ValueRO.targetEntity) ||
-        //             !SystemAPI.HasComponent<LocalTransform>(target.ValueRO.targetEntity))
-        //         {
-        //             target.ValueRW.targetEntity = Entity.Null;
-        //         }
-        //     }
-        // }
-
-        // foreach(RefRW<TargetOverride> targetOverride in SystemAPI.Query<RefRW<TargetOverride>>())
-        // {
-        //     if(targetOverride.ValueRW.targetEntity != null)
-        //     {
-        //         if(!SystemAPI.Exists(targetOverride.ValueRO.targetEntity) ||
-        //             !SystemAPI.HasComponent<LocalTransform>(targetOverride.ValueRO.targetEntity))
-        //         {
-        //             targetOverride.ValueRW.targetEntity = Entity.Null;
-        //         }
-        //     }
-        // }
     }
 }
 
