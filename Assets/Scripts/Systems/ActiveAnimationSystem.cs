@@ -47,13 +47,7 @@ public partial struct ActiveAnimationJob : IJobEntity
                 = animationData.intMeshIdBlobArray[activeAnimation.frame];
 
             if (activeAnimation.frame == 0 &&
-                activeAnimation.activeAnimationType == AnimationDataSO.AnimationType.SoldierShoot)
-            {
-                activeAnimation.activeAnimationType = AnimationDataSO.AnimationType.None;
-            }
-
-            if (activeAnimation.frame == 0 &&
-                activeAnimation.activeAnimationType == AnimationDataSO.AnimationType.ZombieAttack)
+                AnimationDataSO.IsAnimationUninterruptable(activeAnimation.activeAnimationType))
             {
                 activeAnimation.activeAnimationType = AnimationDataSO.AnimationType.None;
             }

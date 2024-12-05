@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum Faction : byte
+public enum FactionType : byte
 {
     Friendly,
     Zombie

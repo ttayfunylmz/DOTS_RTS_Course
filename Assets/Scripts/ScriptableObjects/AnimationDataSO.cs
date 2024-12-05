@@ -12,10 +12,23 @@ public class AnimationDataSO : ScriptableObject
         ZombieWalk,
         SoldierAim,
         SoldierShoot,
-        ZombieAttack
+        ZombieAttack,
+        ScoutIdle,
+        ScoutWalk,
+        ScoutShoot,
+        ScoutAim
     }
 
     public AnimationType animationType;
     public Mesh[] meshArray;
     public float frameTimerMax;
+
+    public static bool IsAnimationUninterruptable(AnimationType animationType)
+    {
+        return animationType switch
+        {
+            AnimationType.ScoutShoot or AnimationType.SoldierShoot or AnimationType.ZombieAttack => true,
+            _ => false,
+        };
+    }
 }

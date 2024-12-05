@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 093fadaed1b6dfb4ebfe086597f394ab
+timeCreated: 1485828311
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 82496
+  packageName: Simple Space - Cartoon Assets
+  packageVersion: 1.0
+  assetPath: Assets/SimpleSpace/Prefabs/Buildings/SM_Bld_Office_01.prefab
+  uploadId: 160948
