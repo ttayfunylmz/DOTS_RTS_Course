@@ -16,7 +16,7 @@ public class BuildingTypeListSO : ScriptableObject
             }
         }
 
-        Debug.LogError("Could not find BuildingTypeSO for AnimationType: " + buildingType);
+        Debug.LogError("Could not find BuildingTypeSO for BuildingType: " + buildingType);
         return null;
     }
 }

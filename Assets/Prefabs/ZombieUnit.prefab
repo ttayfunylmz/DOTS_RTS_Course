@@ -123,6 +123,10 @@ PrefabInstance:
       propertyPath: faction
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7709458630946903577, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+      propertyPath: unitType
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
