@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitType: 1
   progressMax: 2
+  sprite: {fileID: 21300000, guid: c1d64184377378548aee735505bc6fa9, type: 3}

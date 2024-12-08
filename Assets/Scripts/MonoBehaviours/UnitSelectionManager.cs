@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class UnitSelectionManager : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class UnitSelectionManager : MonoBehaviour
 
     public event EventHandler OnSelectionAreaStart;
     public event EventHandler OnSelectionAreaEnd;
+    public event EventHandler OnSelectedEntitiesChanged;
 
     private Vector2 selectionStartMousePosition;
 
@@ -22,6 +24,8 @@ public class UnitSelectionManager : MonoBehaviour
 
     private void Update()
     {
+        if(EventSystem.current.IsPointerOverGameObject()) { return; }
+
         if (Input.GetMouseButtonDown(0))
         {
             selectionStartMousePosition = Input.mousePosition;
@@ -112,6 +116,7 @@ public class UnitSelectionManager : MonoBehaviour
             }
 
             OnSelectionAreaEnd?.Invoke(this, EventArgs.Empty);
+            OnSelectedEntitiesChanged?.Invoke(this, EventArgs.Empty);
         }
 
         if (Input.GetMouseButtonDown(1))
