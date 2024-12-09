@@ -25,6 +25,7 @@ public class UnitSelectionManager : MonoBehaviour
     private void Update()
     {
         if(EventSystem.current.IsPointerOverGameObject()) { return; }
+        if(!BuildingPlacementManager.Instance.GetActiveBuildingTypeSO().IsNone()) { return; }
 
         if (Input.GetMouseButtonDown(0))
         {
