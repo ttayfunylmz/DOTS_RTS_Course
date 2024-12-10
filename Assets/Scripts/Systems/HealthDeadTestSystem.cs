@@ -13,13 +13,14 @@ partial struct HealthDeadTestSystem : ISystem
                 .CreateCommandBuffer(state.WorldUnmanaged); 
 
         foreach ((
-            RefRO<Health> health,
+            RefRW<Health> health,
             Entity entity)
             in SystemAPI.Query<
-                RefRO<Health>>().WithEntityAccess())
+                RefRW<Health>>().WithEntityAccess())
         {
             if(health.ValueRO.healthAmount <= 0) // ENTITY DEAD
             {
+                health.ValueRW.onDead = true;
                 entityCommandBuffer.DestroyEntity(entity);
             }
         }

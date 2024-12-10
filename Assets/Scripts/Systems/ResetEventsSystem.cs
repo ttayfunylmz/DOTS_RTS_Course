@@ -16,6 +16,15 @@ partial struct ResetEventsSystem : ISystem
 
     public void OnUpdate(ref SystemState state)
     {
+        if(SystemAPI.HasSingleton<BuildingHQ>())
+        {
+            Health hqHealth = SystemAPI.GetComponent<Health>(SystemAPI.GetSingletonEntity<BuildingHQ>());
+            if(hqHealth.onDead)
+            {
+                DOTSEventsManager.Instance.TriggerOnHQDead();
+            }
+        }
+
         jobHandleNativeArray[0] = new ResetSelectedEventsJob().ScheduleParallel(state.Dependency);
         jobHandleNativeArray[1] = new ResetHealthEventsJob().ScheduleParallel(state.Dependency);
         jobHandleNativeArray[2] = new ResetShootAttackEventsJob().ScheduleParallel(state.Dependency);
@@ -48,6 +57,7 @@ public partial struct ResetHealthEventsJob : IJobEntity
     public void Execute(ref Health health)
     {
         health.onHealthChanged = false;
+        health.onDead = false;
     }
 }
 

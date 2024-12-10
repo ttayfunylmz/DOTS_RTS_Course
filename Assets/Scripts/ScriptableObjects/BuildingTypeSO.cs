@@ -9,7 +9,8 @@ public class BuildingTypeSO : ScriptableObject
         None,
         ZombieSpawner,
         Tower,
-        Barracks
+        Barracks,
+        HQ
     }
 
     public BuildingType buildingType;
