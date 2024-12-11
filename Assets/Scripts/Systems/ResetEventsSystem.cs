@@ -7,11 +7,13 @@ using Unity.Jobs;
 partial struct ResetEventsSystem : ISystem
 {
     private NativeArray<JobHandle> jobHandleNativeArray;
+    private NativeList<Entity> onBarracksUnitQueueChangedEntityList;
 
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         jobHandleNativeArray = new NativeArray<JobHandle>(4, Allocator.Persistent);
+        onBarracksUnitQueueChangedEntityList = new NativeList<Entity>(Allocator.Persistent);
     }
 
     public void OnUpdate(ref SystemState state)
@@ -30,7 +32,7 @@ partial struct ResetEventsSystem : ISystem
         jobHandleNativeArray[2] = new ResetShootAttackEventsJob().ScheduleParallel(state.Dependency);
         jobHandleNativeArray[3] = new ResetMeleeAttackEventsJob().ScheduleParallel(state.Dependency);
 
-        NativeList<Entity> onBarracksUnitQueueChangedEntityList = new NativeList<Entity>(Allocator.TempJob);
+        onBarracksUnitQueueChangedEntityList.Clear();
         new ResetBuildingBarracksEventsJob()
         {
             onUnitQueueChangedEntityList = onBarracksUnitQueueChangedEntityList.AsParallelWriter(),
@@ -39,6 +41,13 @@ partial struct ResetEventsSystem : ISystem
         DOTSEventsManager.Instance.TriggerOnBarracksUnitQueueChanged(onBarracksUnitQueueChangedEntityList);
 
         state.Dependency = JobHandle.CombineDependencies(jobHandleNativeArray);
+    }
+
+    [BurstCompile]
+    public void OnDestroy(ref SystemState state)
+    {
+        jobHandleNativeArray.Dispose();
+        onBarracksUnitQueueChangedEntityList.Dispose();
     }
 }
 
