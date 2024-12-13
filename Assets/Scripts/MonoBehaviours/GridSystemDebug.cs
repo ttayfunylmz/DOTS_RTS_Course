@@ -1,4 +1,5 @@
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class GridSystemDebug : MonoBehaviour
@@ -6,6 +7,8 @@ public class GridSystemDebug : MonoBehaviour
     public static GridSystemDebug Instance { get; private set; }
 
     [SerializeField] private Transform debugPrefab;
+    [SerializeField] private Sprite circleSprite;
+    [SerializeField] private Sprite arrowSprite;
 
     private bool isInit;
     private GridSystemDebugSingle[,] gridSystemDebugSingleArray;
@@ -47,7 +50,20 @@ public class GridSystemDebug : MonoBehaviour
                 int index = GridSystem.CalculateIndex(x, y, gridSystemData.width);
                 Entity gridNodeEntity = gridSystemData.gridMap.gridEntityArray[index];
                 GridSystem.GridNode gridNode = entityManager.GetComponentData<GridSystem.GridNode>(gridNodeEntity);
-                gridSystemDebugSingle.SetColor(gridNode.data == 0 ? Color.white  : Color.blue);
+
+                if(gridNode.cost == 0)
+                {
+                    // THIS IS THE TARGET
+                    gridSystemDebugSingle.SetSprite(circleSprite);
+                    gridSystemDebugSingle.SetColor(Color.green);
+                }
+                else
+                {
+                    gridSystemDebugSingle.SetSprite(arrowSprite);
+                    gridSystemDebugSingle.SetColor(Color.white);
+                    gridSystemDebugSingle.SetSpriteRotation(
+                        Quaternion.LookRotation(new float3(gridNode.vector.x, 0, gridNode.vector.y), Vector3.up));
+                }
             }
         }
     }
