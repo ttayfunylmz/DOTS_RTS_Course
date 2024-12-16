@@ -180,13 +180,15 @@ public class UnitSelectionManager : MonoBehaviour
             if (!isAttackingSingleTarget)
             {
                 entityQuery =
-                    new EntityQueryBuilder(Allocator.Temp).WithAll<Selected>().WithPresent<MoveOverride, TargetOverride>().Build(entityManager);
+                    new EntityQueryBuilder(Allocator.Temp).WithAll<Selected>().WithPresent<MoveOverride, TargetOverride, FlowFieldPathRequest>().Build(entityManager);
 
                 NativeArray<Entity> entityArray = entityQuery.ToEntityArray(Allocator.Temp);
                 NativeArray<MoveOverride> moveOverrideArray =
                     entityQuery.ToComponentDataArray<MoveOverride>(Allocator.Temp);
                 NativeArray<TargetOverride> targetOverrideArray =
                     entityQuery.ToComponentDataArray<TargetOverride>(Allocator.Temp);
+                NativeArray<FlowFieldPathRequest> flowFieldPathRequestArray =
+                    entityQuery.ToComponentDataArray<FlowFieldPathRequest>(Allocator.Temp);
 
                 NativeArray<float3> movePositionArray = GenerateMovePositionArray(mouseWorldPosition, entityArray.Length);
 
@@ -195,15 +197,20 @@ public class UnitSelectionManager : MonoBehaviour
                     MoveOverride moveOverride = moveOverrideArray[i];
                     moveOverride.targetPosition = movePositionArray[i];
                     moveOverrideArray[i] = moveOverride;
-
                     entityManager.SetComponentEnabled<MoveOverride>(entityArray[i], true);
 
                     TargetOverride targetOverride = targetOverrideArray[i];
                     targetOverride.targetEntity = Entity.Null;
                     targetOverrideArray[i] = targetOverride;
+
+                    FlowFieldPathRequest flowFieldPathRequest = flowFieldPathRequestArray[i];
+                    flowFieldPathRequest.targetPosition = movePositionArray[i];
+                    flowFieldPathRequestArray[i] = flowFieldPathRequest;
+                    entityManager.SetComponentEnabled<FlowFieldPathRequest>(entityArray[i], true);
                 }
                 entityQuery.CopyFromComponentDataArray(moveOverrideArray);
                 entityQuery.CopyFromComponentDataArray(targetOverrideArray);
+                entityQuery.CopyFromComponentDataArray(flowFieldPathRequestArray);
             }
 
             // HANDLE BARRACKS RALLY POSITION
