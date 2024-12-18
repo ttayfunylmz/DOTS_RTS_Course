@@ -48,7 +48,12 @@ public class GridSystemDebug : MonoBehaviour
                 
                 EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
                 int index = GridSystem.CalculateIndex(x, y, gridSystemData.width);
-                Entity gridNodeEntity = gridSystemData.gridMap.gridEntityArray[index];
+                int gridIndex = gridSystemData.nextGridIndex - 1;
+                if(gridIndex < 0)
+                {
+                    gridIndex = 0;
+                }
+                Entity gridNodeEntity = gridSystemData.gridMapArray[gridIndex].gridEntityArray[index];
                 GridSystem.GridNode gridNode = entityManager.GetComponentData<GridSystem.GridNode>(gridNodeEntity);
 
                 if(gridNode.cost == 0)

@@ -19,4 +19,5 @@ public struct FlowFieldFollower : IComponentData, IEnableableComponent
 {
     public float3 targetPosition;
     public float3 lastMovedVector;
+    public int gridIndex;
 }
