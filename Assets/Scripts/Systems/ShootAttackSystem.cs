@@ -20,13 +20,17 @@ partial struct ShootAttackSystem : ISystem
             RefRW<LocalTransform> localTransform,
             RefRW<ShootAttack> shootAttack,
             RefRO<Target> target,
+            RefRW<TargetPositionPathQueued> targetPositionPathQueued,
+            EnabledRefRW<TargetPositionPathQueued> targetPositionPathQueuedEnabled,
             RefRW<UnitMover> unitMover,
             Entity entity)
                 in SystemAPI.Query<
                     RefRW<LocalTransform>,
                     RefRW<ShootAttack>,
                     RefRO<Target>,
-                    RefRW<UnitMover>>().WithDisabled<MoveOverride>().WithEntityAccess())
+                    RefRW<TargetPositionPathQueued>,
+                    EnabledRefRW<TargetPositionPathQueued>,
+                    RefRW<UnitMover>>().WithDisabled<MoveOverride>().WithPresent<TargetPositionPathQueued>().WithEntityAccess())
         {
             if (target.ValueRO.targetEntity == Entity.Null) { continue; }
 
@@ -35,13 +39,15 @@ partial struct ShootAttackSystem : ISystem
             if (math.distance(localTransform.ValueRO.Position, targetLocalTransform.Position) > shootAttack.ValueRO.attackDistance)
             {
                 // TOO FAR, MOVE CLOSER
-                unitMover.ValueRW.targetPosition = targetLocalTransform.Position;
+                targetPositionPathQueued.ValueRW.targetPosition = targetLocalTransform.Position;
+                targetPositionPathQueuedEnabled.ValueRW = true;
                 continue;
             }
             else
             {
                 // CLOSE ENOUGH, STOP MOVING & ATTACK
-                unitMover.ValueRW.targetPosition = localTransform.ValueRO.Position;
+                targetPositionPathQueued.ValueRW.targetPosition = localTransform.ValueRO.Position;
+                targetPositionPathQueuedEnabled.ValueRW = true;
             }
 
             float3 aimDirection = targetLocalTransform.Position - localTransform.ValueRO.Position;

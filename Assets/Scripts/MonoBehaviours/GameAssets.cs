@@ -5,6 +5,7 @@ public class GameAssets : MonoBehaviour
     public const int UNITS_LAYER = 6;
     public const int BUILDINGS_LAYER = 7;
     public const int PATHFINDING_WALLS_LAYER = 8;
+    public const int PATHFINDING_HEAVY_LAYER = 9;
 
     public static GameAssets Instance { get; private set; }
 

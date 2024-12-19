@@ -19,16 +19,19 @@ partial struct EnemyAttackHQSystem : ISystem
 
         foreach((
             RefRO<EnemyAttackHQ> enemyAttackHQ,
-            RefRW<UnitMover> unitMover,
+            RefRW<TargetPositionPathQueued> targetPositionPathQueued,
+            EnabledRefRW<TargetPositionPathQueued> targetPositionPathQueuedEnabled,
             RefRO<Target> target)
                 in SystemAPI.Query<
                     RefRO<EnemyAttackHQ>,
-                    RefRW<UnitMover>,
-                    RefRO<Target>>().WithDisabled<MoveOverride>())
+                    RefRW<TargetPositionPathQueued>,
+                    EnabledRefRW<TargetPositionPathQueued>,
+                    RefRO<Target>>().WithDisabled<MoveOverride>().WithPresent<TargetPositionPathQueued>())
         {
             if(target.ValueRO.targetEntity != Entity.Null) { continue; }
 
-            unitMover.ValueRW.targetPosition = hqPosition;
+            targetPositionPathQueued.ValueRW.targetPosition = hqPosition;
+            targetPositionPathQueuedEnabled.ValueRW = true;
         }
     }
 }

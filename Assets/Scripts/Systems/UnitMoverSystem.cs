@@ -28,14 +28,17 @@ partial struct UnitMoverSystem : ISystem
             EnabledRefRW<TargetPositionPathQueued> targetPositionPathQueuedEnabled,
             RefRW<FlowFieldPathRequest> flowFieldPathRequest,
             EnabledRefRW<FlowFieldPathRequest> flowFieldPathRequestEnabled,
-            RefRW<UnitMover> unitMover)
+            EnabledRefRW<FlowFieldFollower> flowFieldFollowerEnabled,
+            RefRW<UnitMover> unitMover,
+            Entity entity)
                 in SystemAPI.Query<
                     RefRO<LocalTransform>,
                     RefRW<TargetPositionPathQueued>,
                     EnabledRefRW<TargetPositionPathQueued>,
                     RefRW<FlowFieldPathRequest>,
                     EnabledRefRW<FlowFieldPathRequest>,
-                    RefRW<UnitMover>>().WithPresent<FlowFieldPathRequest>())
+                    EnabledRefRW<FlowFieldFollower>,
+                    RefRW<UnitMover>>().WithPresent<FlowFieldPathRequest, FlowFieldFollower>().WithEntityAccess())
         {
             RaycastInput raycastInput = new RaycastInput
             {
@@ -53,12 +56,27 @@ partial struct UnitMoverSystem : ISystem
             {
                 // DID NOT HIT ANYTHING, NO WALLS IN BETWEEN
                 unitMover.ValueRW.targetPosition = targetPositionPathQueued.ValueRO.targetPosition;
+                flowFieldPathRequestEnabled.ValueRW = false;
+                flowFieldFollowerEnabled.ValueRW = false;
             }
             else
             {
                 // THERE'S A WALL IN BETWEEN
-                flowFieldPathRequest.ValueRW.targetPosition = targetPositionPathQueued.ValueRO.targetPosition;
-                flowFieldPathRequestEnabled.ValueRW = true;
+                if(SystemAPI.HasComponent<MoveOverride>(entity))
+                {
+                    SystemAPI.SetComponentEnabled<MoveOverride>(entity, false);
+                }
+                if(GridSystem.IsValidWalkableGridPosition(targetPositionPathQueued.ValueRO.targetPosition, gridSystemData))
+                {
+                    flowFieldPathRequest.ValueRW.targetPosition = targetPositionPathQueued.ValueRO.targetPosition;
+                    flowFieldPathRequestEnabled.ValueRW = true;
+                }
+                else
+                {
+                    unitMover.ValueRW.targetPosition = localTransform.ValueRO.Position;
+                    flowFieldPathRequestEnabled.ValueRW = false;
+                    flowFieldFollowerEnabled.ValueRW = false;
+                }
             }
 
             targetPositionPathQueuedEnabled.ValueRW = false;
