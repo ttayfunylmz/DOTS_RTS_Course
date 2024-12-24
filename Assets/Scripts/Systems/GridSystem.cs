@@ -1,11 +1,13 @@
-#define GRID_DEBUG
+// #define GRID_DEBUG
 
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Physics;
 using UnityEngine;
+using static GridSystem;
 
 public partial struct GridSystem : ISystem
 {
@@ -21,6 +23,7 @@ public partial struct GridSystem : ISystem
         public NativeArray<GridMap> gridMapArray;
         public int nextGridIndex;
         public NativeArray<byte> costMap;
+        public NativeArray<Entity> totalGridMapEntityArray;
     }
 
     public struct GridMap
@@ -32,6 +35,7 @@ public partial struct GridSystem : ISystem
 
     public struct GridNode : IComponentData
     {
+        public int gridIndex;
         public int index;
         public int x;
         public int y;
@@ -39,6 +43,8 @@ public partial struct GridSystem : ISystem
         public int bestCost;
         public float2 vector;
     }
+
+    public ComponentLookup<GridNode> gridNodeComponentLookup;
 
 #if !GRID_DEBUG
     [BurstCompile]
@@ -54,6 +60,7 @@ public partial struct GridSystem : ISystem
         state.EntityManager.AddComponent<GridNode>(gridNodeEntityPrefab);
 
         NativeArray<GridMap> gridMapArray = new NativeArray<GridMap>(FLOW_FIELD_MAP_COUNT, Allocator.Persistent);
+        NativeList<Entity> totalGridMapEntityList = new NativeList<Entity>(totalCount * FLOW_FIELD_MAP_COUNT, Allocator.Temp); 
 
         for (int i = 0; i < FLOW_FIELD_MAP_COUNT; ++i)
         {
@@ -62,6 +69,7 @@ public partial struct GridSystem : ISystem
             gridMap.gridEntityArray = new NativeArray<Entity>(totalCount, Allocator.Persistent);
 
             state.EntityManager.Instantiate(gridNodeEntityPrefab, gridMap.gridEntityArray);
+            totalGridMapEntityList.AddRange(gridMap.gridEntityArray);
 
             for (int x = 0; x < width; ++x)
             {
@@ -70,6 +78,7 @@ public partial struct GridSystem : ISystem
                     int index = CalculateIndex(x, y, width);
                     GridNode gridNode = new GridNode
                     {
+                        gridIndex = i,
                         index = index,
                         x = x,
                         y = y
@@ -92,8 +101,12 @@ public partial struct GridSystem : ISystem
             height = height,
             gridNodeSize = gridNodeSize,
             gridMapArray = gridMapArray,
-            costMap = new NativeArray<byte>(totalCount, Allocator.Persistent)
+            costMap = new NativeArray<byte>(totalCount, Allocator.Persistent),
+            totalGridMapEntityArray = totalGridMapEntityList.ToArray(Allocator.Persistent)
         });
+
+        totalGridMapEntityList.Dispose();
+        gridNodeComponentLookup = SystemAPI.GetComponentLookup<GridNode>(false);
     }
 
 #if !GRID_DEBUG
@@ -102,6 +115,8 @@ public partial struct GridSystem : ISystem
     public void OnUpdate(ref SystemState state)
     {
         GridSystemData gridSystemData = SystemAPI.GetComponent<GridSystemData>(state.SystemHandle);
+
+        gridNodeComponentLookup.Update(ref state);
 
         foreach ((
             RefRW<FlowFieldPathRequest> flowFieldPathRequest,
@@ -119,9 +134,9 @@ public partial struct GridSystem : ISystem
             flowFieldPathRequestEnabled.ValueRW = false;
 
             bool alreadyCalculatedPath = false;
-            for(int i = 0; i < FLOW_FIELD_MAP_COUNT; ++i)
+            for (int i = 0; i < FLOW_FIELD_MAP_COUNT; ++i)
             {
-                if(gridSystemData.gridMapArray[i].isValid && gridSystemData.gridMapArray[i].targetGridPosition.Equals(targetGridPosition))
+                if (gridSystemData.gridMapArray[i].isValid && gridSystemData.gridMapArray[i].targetGridPosition.Equals(targetGridPosition))
                 {
                     // ALREADY CALCULATED PATH TO THE EXACT SAME TARGET GRID POSITION
                     flowFieldFollower.ValueRW.gridIndex = i;
@@ -133,18 +148,27 @@ public partial struct GridSystem : ISystem
                 }
             }
 
-            if(alreadyCalculatedPath) { continue; }
+            if (alreadyCalculatedPath) { continue; }
 
             int gridIndex = gridSystemData.nextGridIndex;
             gridSystemData.nextGridIndex = (gridSystemData.nextGridIndex + 1) % FLOW_FIELD_MAP_COUNT;
 
-            Debug.Log("Calculating Path to " + targetGridPosition + " :: " + gridIndex);
+            // Debug.Log("Calculating Path to " + targetGridPosition + " :: " + gridIndex);
             flowFieldFollower.ValueRW.gridIndex = gridIndex;
             flowFieldFollower.ValueRW.targetPosition = flowFieldPathRequest.ValueRO.targetPosition;
             flowFieldFollowerEnabled.ValueRW = true;
 
             NativeArray<RefRW<GridNode>> gridNodeNativeArray
                 = new NativeArray<RefRW<GridNode>>(gridSystemData.width * gridSystemData.height, Allocator.Temp);
+
+            InitializeGridJob initializeGridJob = new InitializeGridJob
+            {
+                gridIndex = gridIndex,
+                targetGridPosition = targetGridPosition
+            };
+
+            JobHandle initializeGridJobHandle = initializeGridJob.ScheduleParallel(state.Dependency);
+            initializeGridJobHandle.Complete();
 
             for (int x = 0; x < gridSystemData.width; ++x)
             {
@@ -155,66 +179,37 @@ public partial struct GridSystem : ISystem
                     RefRW<GridNode> gridNode = SystemAPI.GetComponentRW<GridNode>(gridNodeEntity);
 
                     gridNodeNativeArray[index] = gridNode;
-
-                    gridNode.ValueRW.vector = new float2(0, 1);
-                    if (x == targetGridPosition.x && y == targetGridPosition.y)
-                    {
-                        // THIS IS THE TARGET DESTINATION
-                        gridNode.ValueRW.cost = 0;
-                        gridNode.ValueRW.bestCost = 0;
-                    }
-                    else
-                    {
-                        gridNode.ValueRW.cost = 1;
-                        gridNode.ValueRW.bestCost = int.MaxValue;
-                    }
                 }
             }
 
             PhysicsWorldSingleton physicsWorldSingleton = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
             CollisionWorld collisionWorld = physicsWorldSingleton.CollisionWorld;
-            NativeList<DistanceHit> distanceHitList = new NativeList<DistanceHit>(Allocator.Temp);
 
-            for (int x = 0; x < gridSystemData.width; ++x)
+            UpdateCostMapJob updateCostMapJob = new UpdateCostMapJob
             {
-                for (int y = 0; y < gridSystemData.height; ++y)
+                width = gridSystemData.width,
+                collisionWorld = collisionWorld,
+                costMap = gridSystemData.costMap,
+                gridMap = gridSystemData.gridMapArray[gridIndex],
+                gridNodeSize = gridSystemData.gridNodeSize,
+                gridNodeSizeHalf = gridSystemData.gridNodeSize * .5f,
+                gridNodeComponentLookup = gridNodeComponentLookup,
+                collisionFilterWall = new CollisionFilter
                 {
-                    if (collisionWorld.OverlapSphere(
-                        GetWorldCenterPosition(x, y, gridSystemData.gridNodeSize),
-                        gridSystemData.gridNodeSize * .5f,
-                        ref distanceHitList,
-                        new CollisionFilter
-                        {
-                            BelongsTo = ~0u,
-                            CollidesWith = 1u << GameAssets.PATHFINDING_WALLS_LAYER,
-                            GroupIndex = 0
-                        }))
-                    {
-                        // THERE IS A WALL
-                        int index = CalculateIndex(x, y, gridSystemData.width);
-                        gridNodeNativeArray[index].ValueRW.cost = WALL_COST;
-                        gridSystemData.costMap[index] = WALL_COST;
-                    }
-
-                    if (collisionWorld.OverlapSphere(
-                        GetWorldCenterPosition(x, y, gridSystemData.gridNodeSize),
-                        gridSystemData.gridNodeSize * .5f,
-                        ref distanceHitList,
-                        new CollisionFilter
-                        {
-                            BelongsTo = ~0u,
-                            CollidesWith = 1u << GameAssets.PATHFINDING_HEAVY_LAYER,
-                            GroupIndex = 0
-                        }))
-                    {
-                        // THERE IS A WALL
-                        int index = CalculateIndex(x, y, gridSystemData.width);
-                        gridNodeNativeArray[index].ValueRW.cost = HEAVY_COST;
-                        gridSystemData.costMap[index] = HEAVY_COST;
-                    }
+                    BelongsTo = ~0u,
+                    CollidesWith = 1u << GameAssets.PATHFINDING_WALLS_LAYER,
+                    GroupIndex = 0
+                },
+                collisionFilterHeavy = new CollisionFilter
+                {
+                    BelongsTo = ~0u,
+                    CollidesWith = 1u << GameAssets.PATHFINDING_HEAVY_LAYER,
+                    GroupIndex = 0
                 }
-            }
-            distanceHitList.Dispose();
+            };
+
+            JobHandle updateCostMapJobHandle = updateCostMapJob.ScheduleParallel(gridSystemData.width * gridSystemData.height, 50, state.Dependency);
+            updateCostMapJobHandle.Complete();
 
             NativeQueue<RefRW<GridNode>> gridNodeOpenQueue = new NativeQueue<RefRW<GridNode>>(Allocator.Temp);
 
@@ -227,7 +222,7 @@ public partial struct GridSystem : ISystem
                 safety--;
                 if (safety < 0)
                 {
-                    Debug.LogError("Safety Break!");
+                    // Debug.LogError("Safety Break!");
                     break;
                 }
 
@@ -271,17 +266,17 @@ public partial struct GridSystem : ISystem
             SystemAPI.SetComponent(state.SystemHandle, gridSystemData);
         }
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            float3 mouseWorldPosition = MouseWorldPosition.Instance.GetPosition();
-            int2 mouseGridPosition = GetGridPosition(mouseWorldPosition, gridSystemData.gridNodeSize);
-            if (IsValidGridPosition(mouseGridPosition, gridSystemData.width, gridSystemData.height))
-            {
-                // int index = CalculateIndex(mouseGridPosition.x, mouseGridPosition.y, gridSystemData.width);
-                // Entity gridNodeEntity = gridSystemData.gridMap.gridEntityArray[index];
-                // RefRW<GridNode> gridNode = SystemAPI.GetComponentRW<GridNode>(gridNodeEntity);
-            }
-        }
+        // if (Input.GetMouseButtonDown(0))
+        // {
+        //     float3 mouseWorldPosition = MouseWorldPosition.Instance.GetPosition();
+        //     int2 mouseGridPosition = GetGridPosition(mouseWorldPosition, gridSystemData.gridNodeSize);
+        //     if (IsValidGridPosition(mouseGridPosition, gridSystemData.width, gridSystemData.height))
+        //     {
+        //         // int index = CalculateIndex(mouseGridPosition.x, mouseGridPosition.y, gridSystemData.width);
+        //         // Entity gridNodeEntity = gridSystemData.gridMap.gridEntityArray[index];
+        //         // RefRW<GridNode> gridNode = SystemAPI.GetComponentRW<GridNode>(gridNodeEntity);
+        //     }
+        // }
 
 #if GRID_DEBUG
         GridSystemDebug.Instance?.InitializeGrid(gridSystemData);
@@ -293,14 +288,15 @@ public partial struct GridSystem : ISystem
     public void OnDestroy(ref SystemState state)
     {
         RefRW<GridSystemData> gridSystemData = SystemAPI.GetComponentRW<GridSystemData>(state.SystemHandle);
-        
-        for(int i = 0; i < FLOW_FIELD_MAP_COUNT; ++i)
+
+        for (int i = 0; i < FLOW_FIELD_MAP_COUNT; ++i)
         {
             gridSystemData.ValueRW.gridMapArray[i].gridEntityArray.Dispose();
         }
 
         gridSystemData.ValueRW.gridMapArray.Dispose();
         gridSystemData.ValueRW.costMap.Dispose();
+        gridSystemData.ValueRW.totalGridMapEntityArray.Dispose();
     }
 
     public static NativeList<RefRW<GridNode>> GetNeighbourGridNodeList(
@@ -382,6 +378,13 @@ public partial struct GridSystem : ISystem
         return CalculateIndex(gridPosition.x, gridPosition.y, width);
     }
 
+    public static int2 GetGridPositionFromIndex(int index, int width)
+    {
+        int y = (int)math.floor(index / width);
+        int x = index % width;
+        return new int2(x, y);
+    }
+
     public static float3 GetWorldPosition(int x, int y, float gridNodeSize)
     {
         return new float3
@@ -435,10 +438,93 @@ public partial struct GridSystem : ISystem
         return gridSystemData.costMap[CalculateIndex(gridPosition, gridSystemData.width)] == WALL_COST;
     }
 
+    public static bool IsWall(int2 gridPosition, int width, NativeArray<byte> costMap)
+    {
+        return costMap[CalculateIndex(gridPosition, width)] == WALL_COST;
+    }
+
     public static bool IsValidWalkableGridPosition(float3 worldPosition, GridSystemData gridSystemData)
     {
         int2 gridPosition = GetGridPosition(worldPosition, gridSystemData.gridNodeSize);
         return IsValidGridPosition(gridPosition, gridSystemData.width, gridSystemData.height)
             && !IsWall(gridPosition, gridSystemData);
+    }
+
+    public static bool IsValidWalkableGridPosition(float3 worldPosition, int width, int height, NativeArray<byte> costMap, float gridNodeSize)
+    {
+        int2 gridPosition = GetGridPosition(worldPosition, gridNodeSize);
+        return IsValidGridPosition(gridPosition, width, height) && !IsWall(gridPosition, width, costMap);
+    }
+}
+
+[BurstCompile]
+public partial struct InitializeGridJob : IJobEntity
+{
+    [ReadOnly] public int gridIndex;
+    [ReadOnly] public int2 targetGridPosition;
+
+    public void Execute(ref GridNode gridNode)
+    {
+        if (gridNode.gridIndex != gridIndex) { return; }
+
+        gridNode.vector = new float2(0, 1);
+        if (gridNode.x == targetGridPosition.x && gridNode.y == targetGridPosition.y)
+        {
+            // THIS IS THE TARGET DESTINATION
+            gridNode.cost = 0;
+            gridNode.bestCost = 0;
+        }
+        else
+        {
+            gridNode.cost = 1;
+            gridNode.bestCost = int.MaxValue;
+        }
+    }
+}
+
+[BurstCompile]
+public partial struct UpdateCostMapJob : IJobFor
+{
+    [NativeDisableParallelForRestriction] public ComponentLookup<GridNode> gridNodeComponentLookup;
+    [NativeDisableParallelForRestriction] public NativeArray<byte> costMap;
+    [ReadOnly] public GridMap gridMap;
+    [ReadOnly] public CollisionWorld collisionWorld;
+    [ReadOnly] public int width;
+    [ReadOnly] public float gridNodeSize;
+    [ReadOnly] public float gridNodeSizeHalf;
+    [ReadOnly] public CollisionFilter collisionFilterWall;
+    [ReadOnly] public CollisionFilter collisionFilterHeavy;
+
+    public void Execute(int index)
+    {
+        NativeList<DistanceHit> distanceHitList = new NativeList<DistanceHit>(Allocator.TempJob);
+        int2 gridPosition = GetGridPositionFromIndex(index, width);
+
+        if (collisionWorld.OverlapSphere(
+            GetWorldCenterPosition(gridPosition.x, gridPosition.y, gridNodeSize),
+            gridNodeSizeHalf,
+            ref distanceHitList,
+            collisionFilterWall))
+        {
+            // THERE IS A WALL
+            GridNode gridNode = gridNodeComponentLookup[gridMap.gridEntityArray[index]];
+            gridNode.cost = WALL_COST;
+            gridNodeComponentLookup[gridMap.gridEntityArray[index]] = gridNode;
+            costMap[index] = WALL_COST;
+        }
+
+        if (collisionWorld.OverlapSphere(
+            GetWorldCenterPosition(gridPosition.x, gridPosition.y, gridNodeSize),
+            gridNodeSizeHalf,
+            ref distanceHitList,
+            collisionFilterHeavy))
+        {
+            // THERE IS A WALL
+            GridNode gridNode = gridNodeComponentLookup[gridMap.gridEntityArray[index]];
+            gridNode.cost = HEAVY_COST;
+            gridNodeComponentLookup[gridMap.gridEntityArray[index]] = gridNode;
+            costMap[index] = HEAVY_COST;
+        }
+        distanceHitList.Dispose();
     }
 }
