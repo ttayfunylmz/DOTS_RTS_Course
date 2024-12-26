@@ -147,7 +147,57 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2919242003866112882, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
       insertIndex: 8
       addedObject: {fileID: 8915699813376196241}
+    - targetCorrespondingSourceObject: {fileID: 2330435186691717461, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7123422231097675231}
+    - targetCorrespondingSourceObject: {fileID: 1842835036207806964, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7259870831333820188}
+    - targetCorrespondingSourceObject: {fileID: 5092109663351009841, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5985432538360732910}
+    - targetCorrespondingSourceObject: {fileID: 8907853354776346997, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1286670702866759343}
   m_SourcePrefab: {fileID: 100100000, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+--- !u!1 &1461169058059218387 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8907853354776346997, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+  m_PrefabInstance: {fileID: 8059210132214394022}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1286670702866759343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1461169058059218387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb632c1ac2872ad41b0ca6174a7f1135, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentGameObject: {fileID: 5141751541074034644}
+  sphereCastSize: 0.1
+--- !u!1 &2986693766640885399 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5092109663351009841, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+  m_PrefabInstance: {fileID: 8059210132214394022}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5985432538360732910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2986693766640885399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb632c1ac2872ad41b0ca6174a7f1135, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentGameObject: {fileID: 5141751541074034644}
+  sphereCastSize: 0.1
 --- !u!4 &4525246987268880061 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5842568132233746971, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
@@ -198,3 +248,41 @@ MonoBehaviour:
   timerMax: 0.5
   damageAmount: 10
   colliderSize: 0.5
+--- !u!1 &5732887295171401203 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2330435186691717461, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+  m_PrefabInstance: {fileID: 8059210132214394022}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7123422231097675231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5732887295171401203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb632c1ac2872ad41b0ca6174a7f1135, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentGameObject: {fileID: 5141751541074034644}
+  sphereCastSize: 0.1
+--- !u!1 &8523907105404573010 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1842835036207806964, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+  m_PrefabInstance: {fileID: 8059210132214394022}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7259870831333820188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8523907105404573010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb632c1ac2872ad41b0ca6174a7f1135, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentGameObject: {fileID: 5141751541074034644}
+  sphereCastSize: 0.1
