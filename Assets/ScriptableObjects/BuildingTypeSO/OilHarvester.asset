@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afb00ad5f1507b84289e64359b4a8e2e, type: 3}
+  m_Name: OilHarvester
+  m_EditorClassIdentifier: 
+  buildingType: 7
+  prefab: {fileID: 3573179893781377338, guid: 1ddcdd34b17ddbd44b9798a27c95a209, type: 3}
+  buildingDistanceMin: 10
+  showInBuildingPlacementManagerUI: 1
+  sprite: {fileID: 21300000, guid: 2c6c8a5b84bda9d4580c4d46edf40dce, type: 3}
+  visualPrefab: {fileID: 8278809462145260686, guid: 2e71adb493af6ac46980b7cb9775dd45, type: 3}
+  harvestableResourceType: 3
+  harvestDistance: 7

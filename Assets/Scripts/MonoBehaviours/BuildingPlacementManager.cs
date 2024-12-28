@@ -65,7 +65,7 @@ public class BuildingPlacementManager : MonoBehaviour
         CollisionFilter collisionFilter = new CollisionFilter
         {
             BelongsTo = ~0u,
-            CollidesWith = 1u << GameAssets.BUILDINGS_LAYER,
+            CollidesWith = 1u << GameAssets.BUILDINGS_LAYER | 1u << GameAssets.DEFAULT_LAYER,
             GroupIndex = 0
         };
 
@@ -104,6 +104,37 @@ public class BuildingPlacementManager : MonoBehaviour
                         return false;
                     }
                 }
+            }
+        }
+
+        if(buildingTypeSO is BuildingResourceHarvesterTypeSO buildingResourceHarvesterTypeSO)
+        {
+            bool hasValidNearbyResourceNodes = false;
+            if(collisionWorld.OverlapSphere(
+                mouseWorldPosition,
+                buildingResourceHarvesterTypeSO.harvestDistance,
+                ref distanceHitList,
+                collisionFilter))
+            {
+                // HIT SOMETHING WITHIN HARVEST DISTANCE
+                foreach(DistanceHit distanceHit in distanceHitList)
+                {
+                    if(entityManager.HasComponent<ResourceTypeSOHolder>(distanceHit.Entity))
+                    {
+                        ResourceTypeSOHolder resourceTypeSOHolder = entityManager.GetComponentData<ResourceTypeSOHolder>(distanceHit.Entity);
+                        if(resourceTypeSOHolder.resourceType == buildingResourceHarvesterTypeSO.harvestableResourceType)
+                        {
+                            // NEARBY VALID RESOURCE NODE
+                            hasValidNearbyResourceNodes = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if(!hasValidNearbyResourceNodes)
+            {
+                return false;
             }
         }
 

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 42b967efb8851844db324c133d3a3d9a
+timeCreated: 1485828314
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 82496
+  packageName: Simple Space - Cartoon Assets
+  packageVersion: 1.0
+  assetPath: Assets/SimpleSpace/Prefabs/Props/SM_Prop_OceanLandingPlatform_01.prefab
+  uploadId: 160948

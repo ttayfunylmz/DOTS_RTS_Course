@@ -8,8 +8,12 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
     public GameObject shootLightPrefabGameObject;
     public GameObject scoutPrefabGameObject;
     public GameObject soldierPrefabGameObject;
+
     public GameObject buildingTowerPrefabGameObject;
     public GameObject buildingBarracksPrefabGameObject;
+    public GameObject buildingIronHarvesterPrefabGameObject;
+    public GameObject buildingGoldHarvesterPrefabGameObject;
+    public GameObject buildingOilHarvesterPrefabGameObject;
 
     public class Baker : Baker<EntitiesReferencesAuthoring>
     {
@@ -25,7 +29,10 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
                 soldierPrefabEntity = GetEntity(authoring.soldierPrefabGameObject, TransformUsageFlags.Dynamic),
 
                 buildingTowerPrefabEntity = GetEntity(authoring.buildingTowerPrefabGameObject, TransformUsageFlags.Dynamic),
-                buildingBarracksPrefabEntity = GetEntity(authoring.buildingBarracksPrefabGameObject, TransformUsageFlags.Dynamic)
+                buildingBarracksPrefabEntity = GetEntity(authoring.buildingBarracksPrefabGameObject, TransformUsageFlags.Dynamic),
+                buildingIronHarvesterPrefabEntity = GetEntity(authoring.buildingIronHarvesterPrefabGameObject, TransformUsageFlags.Dynamic),
+                buildingGoldHarvesterPrefabEntity = GetEntity(authoring.buildingGoldHarvesterPrefabGameObject, TransformUsageFlags.Dynamic),
+                buildingOilHarvesterPrefabEntity = GetEntity(authoring.buildingOilHarvesterPrefabGameObject, TransformUsageFlags.Dynamic),
             });
         }
     }
@@ -41,4 +48,7 @@ public struct EntitiesReferences : IComponentData
 
     public Entity buildingTowerPrefabEntity;
     public Entity buildingBarracksPrefabEntity;
+    public Entity buildingIronHarvesterPrefabEntity;
+    public Entity buildingGoldHarvesterPrefabEntity;
+    public Entity buildingOilHarvesterPrefabEntity;
 }

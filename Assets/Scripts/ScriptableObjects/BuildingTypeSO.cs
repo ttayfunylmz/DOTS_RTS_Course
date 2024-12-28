@@ -10,7 +10,10 @@ public class BuildingTypeSO : ScriptableObject
         ZombieSpawner,
         Tower,
         Barracks,
-        HQ
+        HQ,
+        GoldHarvester,
+        IronHarvester,
+        OilHarvester
     }
 
     public BuildingType buildingType;
@@ -31,6 +34,9 @@ public class BuildingTypeSO : ScriptableObject
         {
             BuildingType.Tower => entitiesReferences.buildingTowerPrefabEntity,
             BuildingType.Barracks => entitiesReferences.buildingBarracksPrefabEntity,
+            BuildingType.IronHarvester => entitiesReferences.buildingIronHarvesterPrefabEntity,
+            BuildingType.GoldHarvester => entitiesReferences.buildingGoldHarvesterPrefabEntity,
+            BuildingType.OilHarvester => entitiesReferences.buildingOilHarvesterPrefabEntity,
             _ => entitiesReferences.buildingTowerPrefabEntity,
         };
     }
