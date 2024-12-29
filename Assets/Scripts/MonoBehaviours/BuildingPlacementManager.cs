@@ -17,40 +17,63 @@ public class BuildingPlacementManager : MonoBehaviour
 
     private Transform ghostTransform;
 
-    private void Awake() 
+    private void Awake()
     {
-        Instance = this;    
+        Instance = this;
     }
 
     private void Update()
     {
-        if(ghostTransform != null)
+        if (ghostTransform != null)
         {
             ghostTransform.position = MouseWorldPosition.Instance.GetPosition();
         }
 
         if (EventSystem.current.IsPointerOverGameObject()) { return; }
-        if(buildingTypeSO.IsNone()) { return; }
+        if (buildingTypeSO.IsNone()) { return; }
 
-        if(Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1))
         {
             SetActiveBuildingTypeSO(GameAssets.Instance.buildingTypeListSO.none);
         }
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (CanPlaceBuilding())
+            if (ResourceManager.Instance.CanSpendResourceAmount(buildingTypeSO.buildCostResourceAmountArray))
             {
-                Vector3 mouseWorldPosition = MouseWorldPosition.Instance.GetPosition();
+                if (CanPlaceBuilding())
+                {
+                    ResourceManager.Instance.SpendResourceAmount(buildingTypeSO.buildCostResourceAmountArray);
 
-                EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+                    Vector3 mouseWorldPosition = MouseWorldPosition.Instance.GetPosition();
 
-                EntityQuery entityQuery = entityManager.CreateEntityQuery(typeof(EntitiesReferences));
-                EntitiesReferences entitiesReferences = entityQuery.GetSingleton<EntitiesReferences>();
+                    EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-                Entity spawnedEntity = entityManager.Instantiate(buildingTypeSO.GetPrefabEntity(entitiesReferences));
-                entityManager.SetComponentData(spawnedEntity, LocalTransform.FromPosition(mouseWorldPosition));
+                    EntityQuery entityQuery = entityManager.CreateEntityQuery(typeof(EntitiesReferences));
+                    EntitiesReferences entitiesReferences = entityQuery.GetSingleton<EntitiesReferences>();
+
+                    // Entity spawnedEntity = entityManager.Instantiate(buildingTypeSO.GetPrefabEntity(entitiesReferences));
+                    // entityManager.SetComponentData(spawnedEntity, LocalTransform.FromPosition(mouseWorldPosition));
+
+                    Entity buildingConstructionVisualEntity = entityManager.Instantiate(buildingTypeSO.GetVisualPrefabEntity(entitiesReferences));
+                    entityManager.SetComponentData(buildingConstructionVisualEntity, LocalTransform.FromPosition(mouseWorldPosition + new Vector3(0f, buildingTypeSO.constructionYOffset, 0f)));
+
+                    Entity buildingConstructionEntity = entityManager.Instantiate(entitiesReferences.buildingConstructionPrefabEntity);
+                    entityManager.SetComponentData(buildingConstructionEntity, LocalTransform.FromPosition(mouseWorldPosition));
+
+                    entityManager.SetComponentData(buildingConstructionEntity, new BuildingConstruction
+                    {
+                        buildingType = buildingTypeSO.buildingType,
+                        constructionTimer = 0f,
+                        constructionTimerMax = buildingTypeSO.buildingConstructionTimerMax,
+                        finalPrefabEntity = buildingTypeSO.GetPrefabEntity(entitiesReferences),
+                        visualEntity = buildingConstructionVisualEntity,
+                        startPosition = mouseWorldPosition + new Vector3(0f, buildingTypeSO.constructionYOffset, 0f),
+                        endPosition = mouseWorldPosition
+                    });
+                }
             }
+
         }
     }
 
@@ -86,19 +109,29 @@ public class BuildingPlacementManager : MonoBehaviour
 
         distanceHitList.Clear();
 
-        if(collisionWorld.OverlapSphere(
+        if (collisionWorld.OverlapSphere(
             mouseWorldPosition,
             buildingTypeSO.buildingDistanceMin,
             ref distanceHitList,
             collisionFilter))
         {
             // HIT SOMETHING WITHIN BUILDING RADIUS
-            foreach(DistanceHit distanceHit in distanceHitList)
+            foreach (DistanceHit distanceHit in distanceHitList)
             {
-                if(entityManager.HasComponent<BuildingTypeSOHolder>(distanceHit.Entity))
+                if (entityManager.HasComponent<BuildingTypeSOHolder>(distanceHit.Entity))
                 {
                     BuildingTypeSOHolder buildingTypeSOHolder = entityManager.GetComponentData<BuildingTypeSOHolder>(distanceHit.Entity);
-                    if(buildingTypeSOHolder.buildingType == buildingTypeSO.buildingType)
+                    if (buildingTypeSOHolder.buildingType == buildingTypeSO.buildingType)
+                    {
+                        // SAME TYPE TOO CLOSE
+                        return false;
+                    }
+                }
+
+                if (entityManager.HasComponent<BuildingConstruction>(distanceHit.Entity))
+                {
+                    BuildingConstruction buildingConstruction = entityManager.GetComponentData<BuildingConstruction>(distanceHit.Entity);
+                    if (buildingConstruction.buildingType == buildingTypeSO.buildingType)
                     {
                         // SAME TYPE TOO CLOSE
                         return false;
@@ -107,22 +140,22 @@ public class BuildingPlacementManager : MonoBehaviour
             }
         }
 
-        if(buildingTypeSO is BuildingResourceHarvesterTypeSO buildingResourceHarvesterTypeSO)
+        if (buildingTypeSO is BuildingResourceHarvesterTypeSO buildingResourceHarvesterTypeSO)
         {
             bool hasValidNearbyResourceNodes = false;
-            if(collisionWorld.OverlapSphere(
+            if (collisionWorld.OverlapSphere(
                 mouseWorldPosition,
                 buildingResourceHarvesterTypeSO.harvestDistance,
                 ref distanceHitList,
                 collisionFilter))
             {
                 // HIT SOMETHING WITHIN HARVEST DISTANCE
-                foreach(DistanceHit distanceHit in distanceHitList)
+                foreach (DistanceHit distanceHit in distanceHitList)
                 {
-                    if(entityManager.HasComponent<ResourceTypeSOHolder>(distanceHit.Entity))
+                    if (entityManager.HasComponent<ResourceTypeSOHolder>(distanceHit.Entity))
                     {
                         ResourceTypeSOHolder resourceTypeSOHolder = entityManager.GetComponentData<ResourceTypeSOHolder>(distanceHit.Entity);
-                        if(resourceTypeSOHolder.resourceType == buildingResourceHarvesterTypeSO.harvestableResourceType)
+                        if (resourceTypeSOHolder.resourceType == buildingResourceHarvesterTypeSO.harvestableResourceType)
                         {
                             // NEARBY VALID RESOURCE NODE
                             hasValidNearbyResourceNodes = true;
@@ -132,7 +165,7 @@ public class BuildingPlacementManager : MonoBehaviour
                 }
             }
 
-            if(!hasValidNearbyResourceNodes)
+            if (!hasValidNearbyResourceNodes)
             {
                 return false;
             }
@@ -150,15 +183,15 @@ public class BuildingPlacementManager : MonoBehaviour
     {
         this.buildingTypeSO = buildingTypeSO;
 
-        if(ghostTransform != null)
+        if (ghostTransform != null)
         {
             Destroy(ghostTransform.gameObject);
         }
 
-        if(!buildingTypeSO.IsNone())
+        if (!buildingTypeSO.IsNone())
         {
             ghostTransform = Instantiate(buildingTypeSO.visualPrefab);
-            foreach(MeshRenderer meshRenderer in ghostTransform.GetComponentsInChildren<MeshRenderer>())
+            foreach (MeshRenderer meshRenderer in ghostTransform.GetComponentsInChildren<MeshRenderer>())
             {
                 meshRenderer.material = ghostMaterial;
             }

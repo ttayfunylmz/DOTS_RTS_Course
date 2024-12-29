@@ -13,10 +13,17 @@ MonoBehaviour:
   m_Name: OilHarvester
   m_EditorClassIdentifier: 
   buildingType: 7
+  buildingConstructionTimerMax: 10
+  constructionYOffset: -9.14
   prefab: {fileID: 3573179893781377338, guid: 1ddcdd34b17ddbd44b9798a27c95a209, type: 3}
   buildingDistanceMin: 10
   showInBuildingPlacementManagerUI: 1
   sprite: {fileID: 21300000, guid: 2c6c8a5b84bda9d4580c4d46edf40dce, type: 3}
   visualPrefab: {fileID: 8278809462145260686, guid: 2e71adb493af6ac46980b7cb9775dd45, type: 3}
+  buildCostResourceAmountArray:
+  - resourceType: 1
+    amount: 30
+  - resourceType: 2
+    amount: 30
   harvestableResourceType: 3
   harvestDistance: 7

@@ -13,10 +13,15 @@ MonoBehaviour:
   m_Name: IronHarvester
   m_EditorClassIdentifier: 
   buildingType: 6
+  buildingConstructionTimerMax: 10
+  constructionYOffset: -2.81
   prefab: {fileID: 1914293655623618210, guid: fc546458fd590b2499a1d7312ebe390a, type: 3}
   buildingDistanceMin: 10
   showInBuildingPlacementManagerUI: 1
   sprite: {fileID: 21300000, guid: d68723ce033c83c45b0fd17e2ab8404d, type: 3}
   visualPrefab: {fileID: 8686191080717679773, guid: 986eac81f4856df47bacc9ed8bf0ea6d, type: 3}
+  buildCostResourceAmountArray:
+  - resourceType: 2
+    amount: 15
   harvestableResourceType: 1
   harvestDistance: 7

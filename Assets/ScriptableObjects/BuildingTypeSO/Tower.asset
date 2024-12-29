@@ -13,8 +13,15 @@ MonoBehaviour:
   m_Name: Tower
   m_EditorClassIdentifier: 
   buildingType: 2
+  buildingConstructionTimerMax: 10
+  constructionYOffset: -10.33
   prefab: {fileID: 7026086510493166303, guid: 776e10a24948eff45b2827a364454878, type: 3}
   buildingDistanceMin: 10
   showInBuildingPlacementManagerUI: 1
   sprite: {fileID: 21300000, guid: 251009f30697ae940904ab5c27e31833, type: 3}
   visualPrefab: {fileID: 797814922017616551, guid: 4dbe3453c2a716743b0db56f6ced9c3b, type: 3}
+  buildCostResourceAmountArray:
+  - resourceType: 1
+    amount: 10
+  - resourceType: 2
+    amount: 5

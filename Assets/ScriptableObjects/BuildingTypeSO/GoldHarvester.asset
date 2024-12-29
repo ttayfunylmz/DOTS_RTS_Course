@@ -13,10 +13,15 @@ MonoBehaviour:
   m_Name: GoldHarvester
   m_EditorClassIdentifier: 
   buildingType: 5
+  buildingConstructionTimerMax: 10
+  constructionYOffset: -4.98
   prefab: {fileID: 8195622797555531891, guid: e0d6d4c82c1bc994fad5827cb099f10c, type: 3}
   buildingDistanceMin: 10
   showInBuildingPlacementManagerUI: 1
   sprite: {fileID: 21300000, guid: 8fe1774abab81cf42b56f4366489453b, type: 3}
   visualPrefab: {fileID: 6489063184693368259, guid: d92e1b4fc516b61468081516cc5c14f1, type: 3}
+  buildCostResourceAmountArray:
+  - resourceType: 1
+    amount: 20
   harvestableResourceType: 2
   harvestDistance: 7

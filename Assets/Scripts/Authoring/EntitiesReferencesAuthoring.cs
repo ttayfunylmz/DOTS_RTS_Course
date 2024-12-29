@@ -15,6 +15,14 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
     public GameObject buildingGoldHarvesterPrefabGameObject;
     public GameObject buildingOilHarvesterPrefabGameObject;
 
+    public GameObject buildingTowerVisualPrefabGameObject;
+    public GameObject buildingBarracksVisualPrefabGameObject;
+    public GameObject buildingIronHarvesterVisualPrefabGameObject;
+    public GameObject buildingGoldHarvesterVisualPrefabGameObject;
+    public GameObject buildingOilHarvesterVisualPrefabGameObject;
+
+    public GameObject buildingConstructionPrefabGameObject;
+
     public class Baker : Baker<EntitiesReferencesAuthoring>
     {
         public override void Bake(EntitiesReferencesAuthoring authoring)
@@ -33,6 +41,14 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
                 buildingIronHarvesterPrefabEntity = GetEntity(authoring.buildingIronHarvesterPrefabGameObject, TransformUsageFlags.Dynamic),
                 buildingGoldHarvesterPrefabEntity = GetEntity(authoring.buildingGoldHarvesterPrefabGameObject, TransformUsageFlags.Dynamic),
                 buildingOilHarvesterPrefabEntity = GetEntity(authoring.buildingOilHarvesterPrefabGameObject, TransformUsageFlags.Dynamic),
+
+                buildingTowerVisualPrefabEntity = GetEntity(authoring.buildingTowerVisualPrefabGameObject, TransformUsageFlags.Dynamic),
+                buildingBarracksVisualPrefabEntity = GetEntity(authoring.buildingBarracksVisualPrefabGameObject, TransformUsageFlags.Dynamic),
+                buildingIronHarvesterVisualPrefabEntity = GetEntity(authoring.buildingIronHarvesterVisualPrefabGameObject, TransformUsageFlags.Dynamic),
+                buildingGoldHarvesterVisualPrefabEntity = GetEntity(authoring.buildingGoldHarvesterVisualPrefabGameObject, TransformUsageFlags.Dynamic),
+                buildingOilHarvesterVisualPrefabEntity = GetEntity(authoring.buildingOilHarvesterVisualPrefabGameObject, TransformUsageFlags.Dynamic),
+
+                buildingConstructionPrefabEntity = GetEntity(authoring.buildingConstructionPrefabGameObject, TransformUsageFlags.Dynamic),
             });
         }
     }
@@ -51,4 +67,12 @@ public struct EntitiesReferences : IComponentData
     public Entity buildingIronHarvesterPrefabEntity;
     public Entity buildingGoldHarvesterPrefabEntity;
     public Entity buildingOilHarvesterPrefabEntity;
+
+    public Entity buildingTowerVisualPrefabEntity;
+    public Entity buildingBarracksVisualPrefabEntity;
+    public Entity buildingIronHarvesterVisualPrefabEntity;
+    public Entity buildingGoldHarvesterVisualPrefabEntity;
+    public Entity buildingOilHarvesterVisualPrefabEntity;
+
+    public Entity buildingConstructionPrefabEntity;
 }
