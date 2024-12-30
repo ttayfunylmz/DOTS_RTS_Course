@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Scout
   m_EditorClassIdentifier: 
   unitType: 2
+  ragdollPrefab: {fileID: 944685194496642680, guid: f6967256f1cbe7b4dbeb06851b14d8d3, type: 3}
   progressMax: 1
   sprite: {fileID: 21300000, guid: 7e5af9f6e92c6974baebe192ce185e5e, type: 3}
   spawnCostResourceAmountArray:

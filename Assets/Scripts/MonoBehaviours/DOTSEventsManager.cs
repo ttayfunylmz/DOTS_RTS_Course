@@ -9,6 +9,7 @@ public class DOTSEventsManager : MonoBehaviour
 
     public event EventHandler OnBarracksUnitQueueChanged;
     public event EventHandler OnHQDead;
+    public event EventHandler OnHealthDead;
 
     private void Awake() 
     {
@@ -26,5 +27,13 @@ public class DOTSEventsManager : MonoBehaviour
     public void TriggerOnHQDead()
     {
         OnHQDead?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void TriggerOnHealthDead(NativeList<Entity> entityNativeList)
+    {
+        foreach(Entity entity in entityNativeList)
+        {
+            OnHealthDead?.Invoke(entity, EventArgs.Empty);
+        }
     }
 }

@@ -8,6 +8,11 @@ using Unity.Rendering;
 [UpdateInGroup(typeof(PostBakingSystemGroup))]
 partial struct AnimationDataHolderBakingSystem : ISystem
 {
+    public void OnCreate(ref SystemState state)
+    {
+        state.RequireForUpdate<AnimationDataHolderObjectData>();
+    }
+
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {

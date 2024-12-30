@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: Zombie
   m_EditorClassIdentifier: 
   unitType: 3
+  ragdollPrefab: {fileID: 944685194496642680, guid: 64dd39be48b76ff4d8a1147aaa06f22c, type: 3}
   progressMax: 1
+  sprite: {fileID: 0}
+  spawnCostResourceAmountArray: []
