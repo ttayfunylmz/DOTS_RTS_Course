@@ -319,7 +319,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6963744988532450062, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
       propertyPath: moveSpeed
-      value: 10
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6963744988532450062, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+      propertyPath: rotationSpeed
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7469244374196491678, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
       propertyPath: m_Mesh
@@ -400,7 +404,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerMax: 0.5
-  damageAmount: 3
+  damageAmount: 7
   attackDistance: 11
   bulletSpawnPositionTransform: {fileID: 372098918502622498}
 --- !u!4 &4640606567367526694 stripped
