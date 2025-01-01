@@ -64,6 +64,10 @@ PrefabInstance:
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3696510487273076019, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
+      propertyPath: timerMax
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 3696510487273076019, guid: b2d2b6ecec3d0a7408e1acd8629df996, type: 3}
       propertyPath: targetFaction
       value: 0
       objectReference: {fileID: 0}

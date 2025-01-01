@@ -1,4 +1,5 @@
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
@@ -7,10 +8,14 @@ using Unity.Transforms;
 
 partial struct VisualUnderFogOfWarSystem : ISystem
 {
+    private ComponentLookup<LocalTransform> localTransformComponentLookup;
+
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<GameSceneTag>();
+
+        localTransformComponentLookup = state.GetComponentLookup<LocalTransform>(true);
     }
 
     [BurstCompile]
@@ -22,17 +27,39 @@ partial struct VisualUnderFogOfWarSystem : ISystem
         EntityCommandBuffer entityCommandBuffer
             = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
-        foreach((
-            RefRW<VisualUnderFogOfWar> visualUnderFogOfWar,
-            Entity entity)
-                in SystemAPI.Query<
-                    RefRW<VisualUnderFogOfWar>>().WithEntityAccess())
-        {
-            LocalTransform parentLocalTransform = SystemAPI.GetComponent<LocalTransform>(visualUnderFogOfWar.ValueRO.parentEntity);
+        localTransformComponentLookup.Update(ref state);
 
-            if(!collisionWorld.SphereCast(
+        VisualUnderFogOfWarJob visualUnderFogOfWarJob = new VisualUnderFogOfWarJob
+        {
+            collisionWorld = collisionWorld,
+            entityCommandBuffer = entityCommandBuffer.AsParallelWriter(),
+            localTransformComponentLookup = localTransformComponentLookup,
+            deltaTime = SystemAPI.Time.DeltaTime
+        };
+
+        visualUnderFogOfWarJob.ScheduleParallel();
+    }
+
+    [BurstCompile]
+    public partial struct VisualUnderFogOfWarJob : IJobEntity
+    {
+        [ReadOnly] public ComponentLookup<LocalTransform> localTransformComponentLookup;
+        [ReadOnly] public CollisionWorld collisionWorld;
+
+        public EntityCommandBuffer.ParallelWriter entityCommandBuffer;
+        public float deltaTime;
+
+        public void Execute(ref VisualUnderFogOfWar visualUnderFogOfWar, [ChunkIndexInQuery] int chunkIndexInQuery, Entity entity)
+        {
+            visualUnderFogOfWar.timer -= deltaTime;
+            if(visualUnderFogOfWar.timer > 0f) { return; }
+            visualUnderFogOfWar.timer += visualUnderFogOfWar.timerMax;
+
+            LocalTransform parentLocalTransform = localTransformComponentLookup[visualUnderFogOfWar.parentEntity];
+
+            if (!collisionWorld.SphereCast(
                 parentLocalTransform.Position,
-                visualUnderFogOfWar.ValueRO.sphereCastSize,
+                visualUnderFogOfWar.sphereCastSize,
                 new float3(0, 1, 0),
                 100,
                 new CollisionFilter
@@ -43,19 +70,19 @@ partial struct VisualUnderFogOfWarSystem : ISystem
                 }))
             {
                 // NOT UNDER VISIBLE FOG OF WAR, HIDE IT
-                if(visualUnderFogOfWar.ValueRO.isVisible)
+                if (visualUnderFogOfWar.isVisible)
                 {
-                    visualUnderFogOfWar.ValueRW.isVisible = false;
-                    entityCommandBuffer.AddComponent<DisableRendering>(entity);
+                    visualUnderFogOfWar.isVisible = false;
+                    entityCommandBuffer.AddComponent<DisableRendering>(chunkIndexInQuery, entity);
                 }
             }
             else
             {
                 // UNDER VISIBLE FOG OF WAR, SHOW IT
-                if(!visualUnderFogOfWar.ValueRO.isVisible)
+                if (!visualUnderFogOfWar.isVisible)
                 {
-                    visualUnderFogOfWar.ValueRW.isVisible = true;
-                    entityCommandBuffer.RemoveComponent<DisableRendering>(entity);
+                    visualUnderFogOfWar.isVisible = true;
+                    entityCommandBuffer.RemoveComponent<DisableRendering>(chunkIndexInQuery, entity);
                 }
             }
         }
