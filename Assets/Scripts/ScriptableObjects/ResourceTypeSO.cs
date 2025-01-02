@@ -1,16 +1,20 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ResourceTypeSO", menuName = "ScriptableObjects/ResourceTypeSO")]
+[CreateAssetMenu()]
 public class ResourceTypeSO : ScriptableObject
 {
-    public enum ResourceType : byte
+
+
+    public enum ResourceType
     {
         None,
         Iron,
         Gold,
-        Oil
+        Oil,
     }
+
 
     public ResourceType resourceType;
     public Sprite sprite;
+
 }

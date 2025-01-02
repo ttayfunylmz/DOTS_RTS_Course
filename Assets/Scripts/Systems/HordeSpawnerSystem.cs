@@ -1,10 +1,12 @@
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Rendering;
 using Unity.Transforms;
 
 partial struct HordeSpawnerSystem : ISystem
 {
+
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
@@ -16,29 +18,55 @@ partial struct HordeSpawnerSystem : ISystem
     {
         EntitiesReferences entitiesReferences = SystemAPI.GetSingleton<EntitiesReferences>();
 
-        EntityCommandBuffer entityCommandBuffer
-            = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+        EntityCommandBuffer entityCommandBuffer =
+            SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
         foreach ((
-            RefRO<LocalTransform> localTransform,
-            RefRW<Horde> horde)
-                in SystemAPI.Query<
-                    RefRO<LocalTransform>,
-                    RefRW<Horde>>())
+           RefRO<LocalTransform> localTransform,
+           RefRW<Horde> horde,
+           Entity entity)
+           in SystemAPI.Query<
+               RefRO<LocalTransform>,
+               RefRW<Horde>>().WithEntityAccess())
         {
+
+            if (!horde.ValueRO.isSetup)
+            {
+                horde.ValueRW.isSetup = true;
+                entityCommandBuffer.AddComponent<DisableRendering>(horde.ValueRO.minimapIconEntity);
+            }
+
+            float beforeStartTimer = horde.ValueRO.startTimer;
+
             horde.ValueRW.startTimer -= SystemAPI.Time.DeltaTime;
 
-            if (horde.ValueRO.startTimer > 0) { continue; }
-
-            // START TIMER IS ELAPSED
-
-            if (horde.ValueRO.zombieAmountToSpawn <= 0)
+            float startSpawningSoonTime = 15f;
+            if (beforeStartTimer > startSpawningSoonTime && horde.ValueRO.startTimer <= startSpawningSoonTime)
             {
-                // ALL ZOMBIES ALREADY SPAWNED
+                horde.ValueRW.onStartSpawningSoon = true;
+                entityCommandBuffer.RemoveComponent<DisableRendering>(horde.ValueRO.minimapIconEntity);
+            }
+
+            if (horde.ValueRO.startTimer > 0)
+            {
                 continue;
             }
 
-            // STILL HAS ZOMBIES TO SPAWN
+            if (beforeStartTimer > 0)
+            {
+                horde.ValueRW.onStartSpawning = true;
+            }
+
+            // Start timer is elapsed
+
+            if (horde.ValueRO.zombieAmountToSpawn <= 0)
+            {
+                // All zombies already spawned
+                entityCommandBuffer.DestroyEntity(entity);
+                continue;
+            }
+
+            // Still has zombies to spawn
             horde.ValueRW.spawnTimer -= SystemAPI.Time.DeltaTime;
             if (horde.ValueRO.spawnTimer <= 0)
             {

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class EntitiesReferencesAuthoring : MonoBehaviour
 {
+
+
     public GameObject bulletPrefabGameObject;
     public GameObject zombiePrefabGameObject;
     public GameObject shootLightPrefabGameObject;
@@ -22,9 +24,13 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
     public GameObject buildingOilHarvesterVisualPrefabGameObject;
 
     public GameObject buildingConstructionPrefabGameObject;
+    public GameObject droneHarvesterPrefabGameObject;
+
 
     public class Baker : Baker<EntitiesReferencesAuthoring>
     {
+
+
         public override void Bake(EntitiesReferencesAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
@@ -49,13 +55,18 @@ public class EntitiesReferencesAuthoring : MonoBehaviour
                 buildingOilHarvesterVisualPrefabEntity = GetEntity(authoring.buildingOilHarvesterVisualPrefabGameObject, TransformUsageFlags.Dynamic),
 
                 buildingConstructionPrefabEntity = GetEntity(authoring.buildingConstructionPrefabGameObject, TransformUsageFlags.Dynamic),
+                droneHarvesterPrefabEntity = GetEntity(authoring.droneHarvesterPrefabGameObject, TransformUsageFlags.Dynamic),
             });
         }
+
     }
+
 }
+
 
 public struct EntitiesReferences : IComponentData
 {
+
     public Entity bulletPrefabEntity;
     public Entity zombiePrefabEntity;
     public Entity shootLightPrefabEntity;
@@ -75,4 +86,6 @@ public struct EntitiesReferences : IComponentData
     public Entity buildingOilHarvesterVisualPrefabEntity;
 
     public Entity buildingConstructionPrefabEntity;
+    public Entity droneHarvesterPrefabEntity;
+
 }

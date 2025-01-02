@@ -3,12 +3,16 @@ using UnityEngine;
 
 public class MeleeAttackAuthoring : MonoBehaviour
 {
+
+
     public float timerMax;
     public int damageAmount;
     public float colliderSize;
 
+
     public class Baker : Baker<MeleeAttackAuthoring>
     {
+
         public override void Bake(MeleeAttackAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
@@ -22,11 +26,15 @@ public class MeleeAttackAuthoring : MonoBehaviour
     }
 }
 
+
+
 public struct MeleeAttack : IComponentData
 {
+
     public float timer;
     public float timerMax;
     public int damageAmount;
     public float colliderSize;
     public bool onAttacked;
+
 }

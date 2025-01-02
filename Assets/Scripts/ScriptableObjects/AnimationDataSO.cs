@@ -1,9 +1,10 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "AnimationDataSO", menuName = "ScriptableObjects/AnimationDataSO")]
+[CreateAssetMenu()]
 public class AnimationDataSO : ScriptableObject
 {
-    public enum AnimationType : byte
+
+    public enum AnimationType
     {
         None,
         SoldierIdle,
@@ -16,19 +17,26 @@ public class AnimationDataSO : ScriptableObject
         ScoutIdle,
         ScoutWalk,
         ScoutShoot,
-        ScoutAim
+        ScoutAim,
     }
+
 
     public AnimationType animationType;
     public Mesh[] meshArray;
     public float frameTimerMax;
 
-    public static bool IsAnimationUninterruptable(AnimationType animationType)
+
+
+    public static bool IsAnimationUninterruptible(AnimationType animationType)
     {
-        return animationType switch
+        switch (animationType)
         {
-            AnimationType.ScoutShoot or AnimationType.SoldierShoot or AnimationType.ZombieAttack => true,
-            _ => false,
-        };
+            default:
+                return false;
+            case AnimationType.ScoutShoot:
+            case AnimationType.SoldierShoot:
+            case AnimationType.ZombieAttack:
+                return true;
+        }
     }
 }

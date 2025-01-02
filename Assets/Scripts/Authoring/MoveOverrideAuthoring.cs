@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class MoveOverrideAuthoring : MonoBehaviour
 {
+
+
     public class Baker : Baker<MoveOverrideAuthoring>
     {
+
+
         public override void Bake(MoveOverrideAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
@@ -15,7 +19,10 @@ public class MoveOverrideAuthoring : MonoBehaviour
     }
 }
 
+
 public struct MoveOverride : IComponentData, IEnableableComponent
 {
+
     public float3 targetPosition;
+
 }

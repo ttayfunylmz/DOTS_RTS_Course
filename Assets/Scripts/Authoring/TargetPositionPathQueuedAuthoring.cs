@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class TargetPositionPathQueuedAuthoring : MonoBehaviour
 {
+
+
+
     public class Baker : Baker<TargetPositionPathQueuedAuthoring>
     {
+
         public override void Bake(TargetPositionPathQueuedAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
@@ -15,7 +19,13 @@ public class TargetPositionPathQueuedAuthoring : MonoBehaviour
     }
 }
 
+
+
 public struct TargetPositionPathQueued : IComponentData, IEnableableComponent
 {
+
+
     public float3 targetPosition;
+
+
 }

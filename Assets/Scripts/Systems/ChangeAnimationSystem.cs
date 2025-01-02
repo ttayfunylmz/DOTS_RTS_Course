@@ -5,6 +5,8 @@ using Unity.Rendering;
 [UpdateBefore(typeof(ActiveAnimationSystem))]
 partial struct ChangeAnimationSystem : ISystem
 {
+
+
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
@@ -18,20 +20,26 @@ partial struct ChangeAnimationSystem : ISystem
 
         ChangeAnimationJob changeAnimationJob = new ChangeAnimationJob
         {
-            animationDataBlobArrayBlobAssetReference = animationDataHolder.animationDataBlobArrayBlobAssetReference
+            animationDataBlobArrayBlobAssetReference = animationDataHolder.animationDataBlobArrayBlobAssetReference,
         };
-
         changeAnimationJob.ScheduleParallel();
     }
+
+
 }
 
+
+[BurstCompile]
 public partial struct ChangeAnimationJob : IJobEntity
 {
+
+
     public BlobAssetReference<BlobArray<AnimationData>> animationDataBlobArrayBlobAssetReference;
+
 
     public void Execute(ref ActiveAnimation activeAnimation, ref MaterialMeshInfo materialMeshInfo)
     {
-        if(AnimationDataSO.IsAnimationUninterruptable(activeAnimation.activeAnimationType))
+        if (AnimationDataSO.IsAnimationUninterruptible(activeAnimation.activeAnimationType))
         {
             return;
         }
@@ -42,10 +50,11 @@ public partial struct ChangeAnimationJob : IJobEntity
             activeAnimation.frameTimer = 0f;
             activeAnimation.activeAnimationType = activeAnimation.nextAnimationType;
 
-            ref AnimationData animationData
-                = ref animationDataBlobArrayBlobAssetReference.Value[(int)activeAnimation.activeAnimationType];
+            ref AnimationData animationData =
+                ref animationDataBlobArrayBlobAssetReference.Value[(int)activeAnimation.activeAnimationType];
 
             materialMeshInfo.Mesh = animationData.intMeshIdBlobArray[0];
         }
     }
+
 }

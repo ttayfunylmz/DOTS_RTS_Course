@@ -1,56 +1,64 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingPlacementManagerUI : MonoBehaviour
 {
+
+
     [SerializeField] private RectTransform buildingContainer;
     [SerializeField] private RectTransform buildingTemplate;
     [SerializeField] private BuildingTypeListSO buildingTypeListSO;
 
+
     private Dictionary<BuildingTypeSO, BuildingPlacementManagerUI_ButtonSingle> buildingButtonDictionary;
 
-    private void Awake() 
+
+    private void Awake()
     {
         buildingTemplate.gameObject.SetActive(false);
 
         buildingButtonDictionary = new Dictionary<BuildingTypeSO, BuildingPlacementManagerUI_ButtonSingle>();
 
-        foreach(BuildingTypeSO buildingTypeSO in buildingTypeListSO.buildingTypeSOList)
+        foreach (BuildingTypeSO buildingTypeSO in buildingTypeListSO.buildingTypeSOList)
         {
-            if(!buildingTypeSO.showInBuildingPlacementManagerUI) { continue; }
+            if (!buildingTypeSO.showInBuildingPlacementManagerUI)
+            {
+                continue;
+            }
 
-            RectTransform buildingRectTransform = Instantiate(buildingTemplate, buildingContainer);
-            buildingRectTransform.gameObject.SetActive(true);
+            RectTransform buildingRectTransfrom = Instantiate(buildingTemplate, buildingContainer);
+            buildingRectTransfrom.gameObject.SetActive(true);
 
-            BuildingPlacementManagerUI_ButtonSingle buttonSingle
-                = buildingRectTransform.GetComponent<BuildingPlacementManagerUI_ButtonSingle>();
-            
+            BuildingPlacementManagerUI_ButtonSingle buttonSingle =
+                buildingRectTransfrom.GetComponent<BuildingPlacementManagerUI_ButtonSingle>();
+
             buildingButtonDictionary[buildingTypeSO] = buttonSingle;
 
             buttonSingle.Setup(buildingTypeSO);
-        }    
+        }
     }
 
-    private void Start() 
+    private void Start()
     {
         BuildingPlacementManager.Instance.OnActiveBuildingTypeSOChanged += BuildingPlacementManager_OnActiveBuildingTypeSOChanged;
 
-        UpdateSelectedVisual();    
+        UpdateSelectedVisual();
     }
 
-    private void BuildingPlacementManager_OnActiveBuildingTypeSOChanged(object sender, EventArgs e)
+    private void BuildingPlacementManager_OnActiveBuildingTypeSOChanged(object sender, System.EventArgs e)
     {
         UpdateSelectedVisual();
     }
 
     private void UpdateSelectedVisual()
     {
-        foreach(BuildingTypeSO buildingTypeSO in buildingButtonDictionary.Keys)
+        foreach (BuildingTypeSO buildingTypeSO in buildingButtonDictionary.Keys)
         {
             buildingButtonDictionary[buildingTypeSO].HideSelected();
         }
 
-        buildingButtonDictionary[BuildingPlacementManager.Instance.GetActiveBuildingTypeSO()].ShowSelected();
+        buildingButtonDictionary[BuildingPlacementManager.Instance.GetActiveBuildingTypeSO()].
+            ShowSelected();
     }
+
 }

@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3d3f4f9d83a48d43b960cbc746d1b96, type: 3}
+  m_Name: Readme
+  m_EditorClassIdentifier: 
+  codeMonkeyHeader: {fileID: 2800000, guid: a6b35de72c336e04b9a9ae3374d57615, type: 3}
+  title: Cursor System PRO
+  titlesub: Code Monkey
+  loadedLayout: 0
+  sections:
+  - heading: Hi there!
+    linkText: 
+    url: 
+    textLines:
+    - Here is a really easy to use System to make your games stand out!
+    - You can use any of the 24 built-in Cursors or draw your own.
+    - Load up the Demo Scene to see them all in action.
+  - heading: Video Tutorial (How To + Code Walkthrough)
+    linkText: https://www.youtube.com/watch?v=pO27ZnBGy1U
+    url: https://www.youtube.com/watch?v=pO27ZnBGy1U
+    textLines: []
+  - heading: 
+    linkText: 
+    url: 
+    textLines: []
+  - heading: How To Make Cursors (Watch the Video for more detail)
+    linkText: 
+    url: 
+    textLines:
+    - '- Go to Assets > Create > Code Monkey > Cursor System > CursorType'
+    - '- Draw Texture in any image program'
+    - '- Set Texture Import Settings > Texture Type to Cursor with Read/Write Enabled'
+    - '- Drag Texture onto CursorType Object Texture Array'
+    - '- Set the Offset which is the actual mouse clickable position'
+    - 
+    - 
+    - 
+  - heading: How To Use
+    linkText: 
+    url: 
+    textLines:
+    - '- Use the CursorSystem script to set the Starting Cursor'
+    - '- CursorChangeEnter / CursorChangeEnterExit scripts'
+    - '- Call the function CursorSystem.SetActiveCursorTypeSO(cursorType);'
+    - 
+    - 
+  - heading: Enjoy!
+    linkText: https://youtube.com/c/CodeMonkeyUnity
+    url: https://youtube.com/c/CodeMonkeyUnity
+    textLines:
+    - I hope you find this Asset useful.
+    - Please write a review on the Asset Store page, I'd love to hear your thoughts.
+    - Best of luck with your games!
+    - <b>- Code Monkey</b>
+  - heading: My other Assets
+    linkText: 
+    url: 
+    textLines: []
+  - heading: Health System FREE
+    linkText: https://assetstore.unity.com/packages/tools/utilities/health-system-includes-learning-video-211787
+    url: https://assetstore.unity.com/packages/tools/utilities/health-system-includes-learning-video-211787
+    textLines: []

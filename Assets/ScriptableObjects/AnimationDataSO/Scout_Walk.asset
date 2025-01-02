@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b21a3f9a0e046e468349ba9742ece2f, type: 3}
+  m_Script: {fileID: 11500000, guid: 126d9ac176964a54bb72263070596466, type: 3}
   m_Name: Scout_Walk
   m_EditorClassIdentifier: 
   animationType: 9
@@ -18,4 +18,4 @@ MonoBehaviour:
   - {fileID: 4300000, guid: cb047812183b9c44ba629a74c85ba76f, type: 2}
   - {fileID: 4300000, guid: 57a705fe25d863849865576c695a3cd8, type: 2}
   - {fileID: 4300000, guid: d07c27a86ac592242b0458cd14249d2e, type: 2}
-  frameTimerMax: 0.2
+  frameTimerMax: 0.14

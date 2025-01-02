@@ -9,13 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afb00ad5f1507b84289e64359b4a8e2e, type: 3}
+  m_Script: {fileID: 11500000, guid: 28ac3cdfc2070554998b36d3e774a62d, type: 3}
   m_Name: OilHarvester
   m_EditorClassIdentifier: 
+  nameString: Oil Harvester
   buildingType: 7
   buildingConstructionTimerMax: 10
-  constructionYOffset: -9.14
-  prefab: {fileID: 3573179893781377338, guid: 1ddcdd34b17ddbd44b9798a27c95a209, type: 3}
+  constructionYOffset: -9.82
+  prefab: {fileID: 5263683672558869485, guid: 7136446c59ed732458990ad98aeeba5e, type: 3}
   buildingDistanceMin: 10
   showInBuildingPlacementManagerUI: 1
   sprite: {fileID: 21300000, guid: 2c6c8a5b84bda9d4580c4d46edf40dce, type: 3}

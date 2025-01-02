@@ -2,41 +2,43 @@ using UnityEngine;
 
 public class RagdollDeadTimer : MonoBehaviour
 {
-    private float timer = 6f;
+
+
+    [SerializeField] private float timer = 6f;
+    [SerializeField] private float sinkTimer = 1f;
     private bool hasColliders = true;
 
-    private void Update() 
+
+    private void Update()
     {
         timer -= Time.deltaTime;
 
-        if(hasColliders && timer <= 3f)
+        if (hasColliders && timer <= 3f)
         {
-            foreach(CharacterJoint characterJoint in GetComponentsInChildren<CharacterJoint>())
+            foreach (CharacterJoint characterJoint in GetComponentsInChildren<CharacterJoint>())
             {
                 Destroy(characterJoint);
             }
-
-            foreach(Rigidbody rigidbody in GetComponentsInChildren<Rigidbody>())
+            foreach (Rigidbody rigidbody in GetComponentsInChildren<Rigidbody>())
             {
                 Destroy(rigidbody);
             }
-
-            foreach(Collider collider in GetComponentsInChildren<Collider>())
+            foreach (Collider collider in GetComponentsInChildren<Collider>())
             {
                 Destroy(collider);
             }
-
             hasColliders = false;
         }
 
-        if(timer <= 1f)
+        if (timer <= sinkTimer)
         {
             transform.position += Vector3.down * Time.deltaTime;
         }
 
-        if(timer <= 0f)
+        if (timer <= 0f)
         {
             Destroy(gameObject);
         }
     }
+
 }

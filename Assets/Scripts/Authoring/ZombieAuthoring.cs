@@ -3,8 +3,12 @@ using UnityEngine;
 
 public class ZombieAuthoring : MonoBehaviour
 {
+
+
     public class Baker : Baker<ZombieAuthoring>
     {
+
+
         public override void Bake(ZombieAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
@@ -13,7 +17,9 @@ public class ZombieAuthoring : MonoBehaviour
     }
 }
 
+
+
+
 public struct Zombie : IComponentData
 {
-    
 }

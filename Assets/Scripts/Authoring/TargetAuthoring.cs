@@ -3,7 +3,10 @@ using UnityEngine;
 
 public class TargetAuthoring : MonoBehaviour
 {
+
+
     public GameObject targetGameObject;
+
 
     public class Baker : Baker<TargetAuthoring>
     {
@@ -16,9 +19,16 @@ public class TargetAuthoring : MonoBehaviour
             });
         }
     }
+
+
 }
+
 
 public struct Target : IComponentData
 {
+
+
     public Entity targetEntity;
+
+
 }

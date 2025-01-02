@@ -1,10 +1,14 @@
 using Unity.Entities;
 using UnityEngine;
 
+
 public class MainMenuSceneTagAuthoring : MonoBehaviour
 {
+
+
     public class Baker : Baker<MainMenuSceneTagAuthoring>
     {
+
         public override void Bake(MainMenuSceneTagAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
@@ -13,7 +17,10 @@ public class MainMenuSceneTagAuthoring : MonoBehaviour
     }
 }
 
+
+
 public struct MainMenuSceneTag : IComponentData
 {
+
 
 }

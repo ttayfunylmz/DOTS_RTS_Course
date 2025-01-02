@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f855e9f8e28135942ae8ab77b7f97a93, type: 3}
+  m_Script: {fileID: 11500000, guid: 1ff53428e0e41f546bc54531e1b75218, type: 3}
   m_Name: Scout
   m_EditorClassIdentifier: 
   unitType: 2

@@ -3,8 +3,11 @@ using UnityEngine;
 
 public class GameSceneTagAuthoring : MonoBehaviour
 {
+
+
     public class Baker : Baker<GameSceneTagAuthoring>
     {
+
         public override void Bake(GameSceneTagAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
@@ -13,7 +16,10 @@ public class GameSceneTagAuthoring : MonoBehaviour
     }
 }
 
+
+
 public struct GameSceneTag : IComponentData
 {
+
 
 }

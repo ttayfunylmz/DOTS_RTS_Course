@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 407b25a809300b843a7fee1fa4c4765e
+timeCreated: 1485828312
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 82496
+  packageName: Simple Space - Cartoon Assets
+  packageVersion: 1.0
+  assetPath: Assets/SimpleSpace/Prefabs/Vehicles/SM_Veh_Satellite_05.prefab
+  uploadId: 160948

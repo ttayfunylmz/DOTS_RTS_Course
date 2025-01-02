@@ -1,13 +1,19 @@
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class BulletAuthoring : MonoBehaviour
 {
+
+
     public float speed;
     public int damageAmount;
 
+
     public class Baker : Baker<BulletAuthoring>
     {
+
+
         public override void Bake(BulletAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
@@ -17,11 +23,20 @@ public class BulletAuthoring : MonoBehaviour
                 damageAmount = authoring.damageAmount,
             });
         }
+
     }
+
 }
+
+
 
 public struct Bullet : IComponentData
 {
+
+
     public float speed;
     public int damageAmount;
+    public float3 lastTargetPosition;
+
+
 }

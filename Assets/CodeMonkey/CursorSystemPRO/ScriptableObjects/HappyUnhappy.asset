@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7896ae0a27e62b04f878b65061fefd99, type: 3}
+  m_Name: HappyUnhappy
+  m_EditorClassIdentifier: 
+  textureArray: []
+  spriteArray:
+  - {fileID: 131729859089310086, guid: 356cf8904d3fc124ea2063d861e46d00, type: 3}
+  - {fileID: 3946651626476969898, guid: 356cf8904d3fc124ea2063d861e46d00, type: 3}
+  - {fileID: -6110318484638442654, guid: 356cf8904d3fc124ea2063d861e46d00, type: 3}
+  - {fileID: 7639965610728905344, guid: 356cf8904d3fc124ea2063d861e46d00, type: 3}
+  - {fileID: -6453340733843863721, guid: 356cf8904d3fc124ea2063d861e46d00, type: 3}
+  - {fileID: -1098865799880198473, guid: 356cf8904d3fc124ea2063d861e46d00, type: 3}
+  - {fileID: 5833121506302547677, guid: 356cf8904d3fc124ea2063d861e46d00, type: 3}
+  - {fileID: -5880247529393170972, guid: 356cf8904d3fc124ea2063d861e46d00, type: 3}
+  frameRate: 10
+  offset: {x: 8, y: 8}

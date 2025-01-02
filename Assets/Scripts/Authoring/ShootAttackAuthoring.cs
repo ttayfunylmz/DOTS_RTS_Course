@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class ShootAttackAuthoring : MonoBehaviour
 {
+
+
     public float timerMax;
     public int damageAmount;
     public float attackDistance;
-    public Transform bulletSpawnPositionTransform;
+    public Transform bulletspawnPositionTransform;
 
 
     public class Baker : Baker<ShootAttackAuthoring>
     {
+
+
         public override void Bake(ShootAttackAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
@@ -20,14 +24,21 @@ public class ShootAttackAuthoring : MonoBehaviour
                 timerMax = authoring.timerMax,
                 damageAmount = authoring.damageAmount,
                 attackDistance = authoring.attackDistance,
-                bulletSpawnLocalPosition = authoring.bulletSpawnPositionTransform.localPosition,
+                bulletSpawnLocalPosition = authoring.bulletspawnPositionTransform.localPosition,
             });
         }
+
+
     }
+
+
 }
+
+
 
 public struct ShootAttack : IComponentData
 {
+
     public float timer;
     public float timerMax;
     public int damageAmount;
@@ -40,4 +51,5 @@ public struct ShootAttack : IComponentData
         public bool isTriggered;
         public float3 shootFromPosition;
     }
+
 }

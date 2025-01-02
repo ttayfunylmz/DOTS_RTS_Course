@@ -5,6 +5,8 @@ using Unity.Transforms;
 
 partial struct RandomWalkingSystem : ISystem
 {
+
+
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
@@ -13,16 +15,17 @@ partial struct RandomWalkingSystem : ISystem
             RefRW<TargetPositionPathQueued> targetPositionPathQueued,
             EnabledRefRW<TargetPositionPathQueued> targetPositionPathQueuedEnabled,
             RefRO<LocalTransform> localTransform)
-                in SystemAPI.Query<
-                    RefRW<RandomWalking>,
-                    RefRW<TargetPositionPathQueued>,
-                    EnabledRefRW<TargetPositionPathQueued>,
-                    RefRO<LocalTransform>>().WithPresent<TargetPositionPathQueued>())
+            in SystemAPI.Query<
+                RefRW<RandomWalking>,
+                RefRW<TargetPositionPathQueued>,
+                EnabledRefRW<TargetPositionPathQueued>,
+                RefRO<LocalTransform>>().WithPresent<TargetPositionPathQueued>())
         {
-            if(math.distancesq(localTransform.ValueRO.Position, randomWalking.ValueRO.targetPosition) 
-                < UnitMoverSystem.REACHED_TARGET_POSITION_DISTANCE_SQ)
+
+
+            if (math.distancesq(localTransform.ValueRO.Position, randomWalking.ValueRO.targetPosition) < UnitMoverSystem.REACHED_TARGET_POSITION_DISTANCE_SQ)
             {
-                // REACHED THE TARGET DISTANCE
+                // Reached the target distance
                 Random random = randomWalking.ValueRO.random;
 
                 float3 randomDirection = new float3(random.NextFloat(-1f, +1f), 0, random.NextFloat(-1f, +1f));
@@ -36,10 +39,13 @@ partial struct RandomWalkingSystem : ISystem
             }
             else
             {
-                // TOO FAR, MOVE CLOSER
+                // Too far, move closer
                 targetPositionPathQueued.ValueRW.targetPosition = randomWalking.ValueRO.targetPosition;
                 targetPositionPathQueuedEnabled.ValueRW = true;
             }
         }
     }
+
+
+
 }

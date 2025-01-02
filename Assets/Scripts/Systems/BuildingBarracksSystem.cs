@@ -4,6 +4,8 @@ using Unity.Transforms;
 
 partial struct BuildingBarracksSystem : ISystem
 {
+
+
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
@@ -19,12 +21,13 @@ partial struct BuildingBarracksSystem : ISystem
             DynamicBuffer<SpawnUnitTypeBuffer> spawnUnitTypeDynamicBuffer,
             RefRO<BuildingBarracksUnitEnqueue> buildingBarracksUnitEnqueue,
             EnabledRefRW<BuildingBarracksUnitEnqueue> buildingBarracksUnitEnqueueEnabled)
-                in SystemAPI.Query<
-                    RefRW<BuildingBarracks>,
-                    DynamicBuffer<SpawnUnitTypeBuffer>,
-                    RefRO<BuildingBarracksUnitEnqueue>,
-                    EnabledRefRW<BuildingBarracksUnitEnqueue>>())
+            in SystemAPI.Query<
+                RefRW<BuildingBarracks>,
+                DynamicBuffer<SpawnUnitTypeBuffer>,
+                RefRO<BuildingBarracksUnitEnqueue>,
+                EnabledRefRW<BuildingBarracksUnitEnqueue>>())
         {
+
             spawnUnitTypeDynamicBuffer.Add(new SpawnUnitTypeBuffer
             {
                 unitType = buildingBarracksUnitEnqueue.ValueRO.unitType
@@ -34,26 +37,28 @@ partial struct BuildingBarracksSystem : ISystem
             buildingBarracks.ValueRW.onUnitQueueChanged = true;
         }
 
+
         foreach ((
             RefRO<LocalTransform> localTransform,
             RefRW<BuildingBarracks> buildingBarracks,
             DynamicBuffer<SpawnUnitTypeBuffer> spawnUnitTypeDynamicBuffer)
-                in SystemAPI.Query<
-                    RefRO<LocalTransform>,
-                    RefRW<BuildingBarracks>,
-                    DynamicBuffer<SpawnUnitTypeBuffer>>())
+            in SystemAPI.Query<
+                RefRO<LocalTransform>,
+                RefRW<BuildingBarracks>,
+                DynamicBuffer<SpawnUnitTypeBuffer>>())
         {
-            if(spawnUnitTypeDynamicBuffer.IsEmpty)
+
+            if (spawnUnitTypeDynamicBuffer.IsEmpty)
             {
                 continue;
             }
 
-            if(buildingBarracks.ValueRO.activeUnitType != spawnUnitTypeDynamicBuffer[0].unitType)
+            if (buildingBarracks.ValueRO.activeUnitType != spawnUnitTypeDynamicBuffer[0].unitType)
             {
                 buildingBarracks.ValueRW.activeUnitType = spawnUnitTypeDynamicBuffer[0].unitType;
 
-                UnitTypeSO activeUnitTypeSO 
-                    = GameAssets.Instance.unitTypeListSO.GetUnitTypeSO(buildingBarracks.ValueRO.activeUnitType);
+                UnitTypeSO activeUnitTypeSO =
+                    GameAssets.Instance.unitTypeListSO.GetUnitTypeSO(buildingBarracks.ValueRO.activeUnitType);
 
                 buildingBarracks.ValueRW.progressMax = activeUnitTypeSO.progressMax;
             }
@@ -80,8 +85,8 @@ partial struct BuildingBarracksSystem : ISystem
             {
                 targetPosition = localTransform.ValueRO.Position + buildingBarracks.ValueRO.rallyPositionOffset
             });
-            
             SystemAPI.SetComponentEnabled<MoveOverride>(spawnedUnitEntity, true);
         }
     }
+
 }

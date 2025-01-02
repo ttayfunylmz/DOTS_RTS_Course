@@ -12,7 +12,7 @@ public class AnimatedMeshAuthoring : MonoBehaviour
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
             AddComponent(entity, new AnimatedMesh
             {
-                meshEntity = GetEntity(authoring.meshGameObject, TransformUsageFlags.Dynamic)
+                meshEntity = GetEntity(authoring.meshGameObject, TransformUsageFlags.Dynamic),
             });
         }
     }

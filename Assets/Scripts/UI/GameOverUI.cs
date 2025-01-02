@@ -1,29 +1,31 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameOverUI : MonoBehaviour
 {
+
+
     [SerializeField] private Button mainMenuButton;
 
-    private void Awake() 
+
+    private void Awake()
     {
         mainMenuButton.onClick.AddListener(() =>
         {
             Time.timeScale = 1f;
             SceneManager.LoadScene(0);
-        });  
+        });
     }
 
-    private void Start() 
+    private void Start()
     {
         DOTSEventsManager.Instance.OnHQDead += DOTSEventsManager_OnHQDead;
 
-        Hide();    
+        Hide();
     }
 
-    private void DOTSEventsManager_OnHQDead(object sender, EventArgs e)
+    private void DOTSEventsManager_OnHQDead(object sender, System.EventArgs e)
     {
         Show();
         Time.timeScale = 0f;
@@ -38,4 +40,5 @@ public class GameOverUI : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
 }

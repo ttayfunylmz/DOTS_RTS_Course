@@ -1,16 +1,18 @@
 using Unity.Burst;
-using Unity.Collections;
 using Unity.Entities;
+using Unity.Collections;
+using UnityEngine;
 
 [UpdateInGroup(typeof(LateSimulationSystemGroup))]
 partial struct HealthDeadTestSystem : ISystem
 {
+
+
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        EntityCommandBuffer entityCommandBuffer 
-            = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>()
-                .CreateCommandBuffer(state.WorldUnmanaged); 
+        EntityCommandBuffer entityCommandBuffer =
+            SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
         foreach ((
             RefRW<Health> health,
@@ -18,17 +20,22 @@ partial struct HealthDeadTestSystem : ISystem
             in SystemAPI.Query<
                 RefRW<Health>>().WithEntityAccess())
         {
-            if(health.ValueRO.healthAmount <= 0) // ENTITY DEAD
-            {
-                health.ValueRW.onDead = true;
-                entityCommandBuffer.DestroyEntity(entity);
 
-                if(SystemAPI.HasComponent<BuildingConstruction>(entity))
+            if (health.ValueRO.healthAmount <= 0)
+            {
+                // This entity is dead
+                health.ValueRW.onDead = true;
+
+                if (SystemAPI.HasComponent<BuildingConstruction>(entity))
                 {
                     BuildingConstruction buildingConstruction = SystemAPI.GetComponent<BuildingConstruction>(entity);
                     entityCommandBuffer.DestroyEntity(buildingConstruction.visualEntity);
                 }
+
+                entityCommandBuffer.DestroyEntity(entity);
             }
         }
     }
+
+
 }

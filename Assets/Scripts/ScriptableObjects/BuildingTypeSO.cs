@@ -1,10 +1,12 @@
 using Unity.Entities;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "BuildingTypeSO", menuName = "ScriptableObjects/BuildingTypeSO")]
+[CreateAssetMenu()]
 public class BuildingTypeSO : ScriptableObject
 {
-    public enum BuildingType : byte
+
+
+    public enum BuildingType
     {
         None,
         ZombieSpawner,
@@ -13,9 +15,11 @@ public class BuildingTypeSO : ScriptableObject
         HQ,
         GoldHarvester,
         IronHarvester,
-        OilHarvester
+        OilHarvester,
     }
 
+
+    public string nameString;
     public BuildingType buildingType;
     public float buildingConstructionTimerMax;
     public float constructionYOffset;
@@ -26,6 +30,7 @@ public class BuildingTypeSO : ScriptableObject
     public Transform visualPrefab;
     public ResourceAmount[] buildCostResourceAmountArray;
 
+
     public bool IsNone()
     {
         return buildingType == BuildingType.None;
@@ -33,27 +38,30 @@ public class BuildingTypeSO : ScriptableObject
 
     public Entity GetPrefabEntity(EntitiesReferences entitiesReferences)
     {
-        return buildingType switch
+        switch (buildingType)
         {
-            BuildingType.Tower => entitiesReferences.buildingTowerPrefabEntity,
-            BuildingType.Barracks => entitiesReferences.buildingBarracksPrefabEntity,
-            BuildingType.IronHarvester => entitiesReferences.buildingIronHarvesterPrefabEntity,
-            BuildingType.GoldHarvester => entitiesReferences.buildingGoldHarvesterPrefabEntity,
-            BuildingType.OilHarvester => entitiesReferences.buildingOilHarvesterPrefabEntity,
-            _ => entitiesReferences.buildingTowerPrefabEntity,
-        };
+            default:
+            case BuildingType.None:
+            case BuildingType.Tower: return entitiesReferences.buildingTowerPrefabEntity;
+            case BuildingType.Barracks: return entitiesReferences.buildingBarracksPrefabEntity;
+            case BuildingType.IronHarvester: return entitiesReferences.buildingIronHarvesterPrefabEntity;
+            case BuildingType.GoldHarvester: return entitiesReferences.buildingGoldHarvesterPrefabEntity;
+            case BuildingType.OilHarvester: return entitiesReferences.buildingOilHarvesterPrefabEntity;
+        }
     }
 
     public Entity GetVisualPrefabEntity(EntitiesReferences entitiesReferences)
     {
-        return buildingType switch
+        switch (buildingType)
         {
-            BuildingType.Tower => entitiesReferences.buildingTowerVisualPrefabEntity,
-            BuildingType.Barracks => entitiesReferences.buildingBarracksVisualPrefabEntity,
-            BuildingType.IronHarvester => entitiesReferences.buildingIronHarvesterVisualPrefabEntity,
-            BuildingType.GoldHarvester => entitiesReferences.buildingGoldHarvesterVisualPrefabEntity,
-            BuildingType.OilHarvester => entitiesReferences.buildingOilHarvesterVisualPrefabEntity,
-            _ => entitiesReferences.buildingTowerVisualPrefabEntity,
-        };
+            default:
+            case BuildingType.None:
+            case BuildingType.Tower: return entitiesReferences.buildingTowerVisualPrefabEntity;
+            case BuildingType.Barracks: return entitiesReferences.buildingBarracksVisualPrefabEntity;
+            case BuildingType.IronHarvester: return entitiesReferences.buildingIronHarvesterVisualPrefabEntity;
+            case BuildingType.GoldHarvester: return entitiesReferences.buildingGoldHarvesterVisualPrefabEntity;
+            case BuildingType.OilHarvester: return entitiesReferences.buildingOilHarvesterVisualPrefabEntity;
+        }
     }
+
 }

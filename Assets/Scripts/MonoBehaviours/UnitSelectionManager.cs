@@ -9,28 +9,43 @@ using UnityEngine.EventSystems;
 
 public class UnitSelectionManager : MonoBehaviour
 {
+
+
     public static UnitSelectionManager Instance { get; private set; }
+
 
     public event EventHandler OnSelectionAreaStart;
     public event EventHandler OnSelectionAreaEnd;
     public event EventHandler OnSelectedEntitiesChanged;
 
+
     private Vector2 selectionStartMousePosition;
+
 
     private void Awake()
     {
         Instance = this;
     }
 
+    private void Start()
+    {
+        BuildingPlacementManager.Instance.OnActiveBuildingTypeSOChanged += BuildingPlacementManager_OnActiveBuildingTypeSOChanged;
+    }
+
+    private void BuildingPlacementManager_OnActiveBuildingTypeSOChanged(object sender, EventArgs e)
+    {
+        if (BuildingPlacementManager.Instance.GetActiveBuildingTypeSO() != GameAssets.Instance.buildingTypeListSO.none)
+        {
+            // Selected some building
+            DeselectAllUnits();
+        }
+    }
+
     private void Update()
     {
-        if(EventSystem.current.IsPointerOverGameObject()) { return; }
-        if(!BuildingPlacementManager.Instance.GetActiveBuildingTypeSO().IsNone()) { return; }
-
-        if (Input.GetMouseButtonDown(0))
+        if (!BuildingPlacementManager.Instance.GetActiveBuildingTypeSO().IsNone())
         {
-            selectionStartMousePosition = Input.mousePosition;
-            OnSelectionAreaStart?.Invoke(this, EventArgs.Empty);
+            return;
         }
 
         if (Input.GetMouseButtonUp(0))
@@ -38,14 +53,26 @@ public class UnitSelectionManager : MonoBehaviour
             Vector2 selectionEndMousePosition = Input.mousePosition;
 
             EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-
-            EntityQuery entityQuery = new EntityQueryBuilder(Allocator.Temp)
-                .WithAll<Selected>().Build(entityManager);
+            EntityQuery entityQuery = new EntityQueryBuilder(Allocator.Temp).WithAll<Selected>().Build(entityManager);
 
             NativeArray<Entity> entityArray = entityQuery.ToEntityArray(Allocator.Temp);
             NativeArray<Selected> selectedArray = entityQuery.ToComponentDataArray<Selected>(Allocator.Temp);
 
-            for (int i = 0; i < entityArray.Length; ++i)
+            // Is Barracks selected?
+            if (entityArray.Length == 1 && entityManager.HasComponent<BuildingBarracks>(entityArray[0]))
+            {
+                // Yup it's the barracks that's selected
+                // Is it clicking on the Barracks UI?
+                if (EventSystem.current.IsPointerOverGameObject())
+                {
+                    // Yes!
+                    // Don't deselect
+                    return;
+                }
+            }
+
+            // Deselect all
+            for (int i = 0; i < entityArray.Length; i++)
             {
                 entityManager.SetComponentEnabled<Selected>(entityArray[i], false);
                 Selected selected = selectedArray[i];
@@ -53,28 +80,25 @@ public class UnitSelectionManager : MonoBehaviour
                 entityManager.SetComponentData(entityArray[i], selected);
             }
 
-            Rect selectionAreaRect = GetSelectionAreaRect();
 
+            Rect selectionAreaRect = GetSelectionAreaRect();
             float selectionAreaSize = selectionAreaRect.width + selectionAreaRect.height;
             float multipleSelectionSizeMin = 40f;
             bool isMultipleSelection = selectionAreaSize > multipleSelectionSizeMin;
 
-            if (isMultipleSelection) // MULTIPLE SELECTION
+            if (isMultipleSelection)
             {
-                entityQuery = new EntityQueryBuilder(Allocator.Temp)
-                    .WithAll<LocalTransform, Unit>().WithPresent<Selected>().Build(entityManager);
+                entityQuery = new EntityQueryBuilder(Allocator.Temp).WithAll<LocalTransform, Unit>().WithPresent<Selected>().Build(entityManager);
 
                 entityArray = entityQuery.ToEntityArray(Allocator.Temp);
-                NativeArray<LocalTransform> localTransformArray
-                    = entityQuery.ToComponentDataArray<LocalTransform>(Allocator.Temp);
-
-                for (int i = 0; i < localTransformArray.Length; ++i)
+                NativeArray<LocalTransform> localTransformArray = entityQuery.ToComponentDataArray<LocalTransform>(Allocator.Temp);
+                for (int i = 0; i < localTransformArray.Length; i++)
                 {
                     LocalTransform unitLocalTransform = localTransformArray[i];
                     Vector2 unitScreenPosition = Camera.main.WorldToScreenPoint(unitLocalTransform.Position);
-
                     if (selectionAreaRect.Contains(unitScreenPosition))
                     {
+                        // Unit is inside the selection area
                         entityManager.SetComponentEnabled<Selected>(entityArray[i], true);
                         Selected selected = entityManager.GetComponentData<Selected>(entityArray[i]);
                         selected.onSelected = true;
@@ -82,11 +106,10 @@ public class UnitSelectionManager : MonoBehaviour
                     }
                 }
             }
-            else // SINGLE SELECTION
+            else
             {
-                entityQuery = new EntityQueryBuilder(Allocator.Temp)
-                    .WithAll<PhysicsWorldSingleton>().Build(entityManager);
-
+                // Single select
+                entityQuery = entityManager.CreateEntityQuery(typeof(PhysicsWorldSingleton));
                 PhysicsWorldSingleton physicsWorldSingleton = entityQuery.GetSingleton<PhysicsWorldSingleton>();
                 CollisionWorld collisionWorld = physicsWorldSingleton.CollisionWorld;
                 UnityEngine.Ray cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -102,12 +125,11 @@ public class UnitSelectionManager : MonoBehaviour
                         GroupIndex = 0,
                     }
                 };
-
                 if (collisionWorld.CastRay(raycastInput, out Unity.Physics.RaycastHit raycastHit))
                 {
                     if (entityManager.HasComponent<Selected>(raycastHit.Entity))
                     {
-                        // HIT A SELECTABLE ENTITY
+                        // Hit a Selectable entity
                         entityManager.SetComponentEnabled<Selected>(raycastHit.Entity, true);
                         Selected selected = entityManager.GetComponentData<Selected>(raycastHit.Entity);
                         selected.onSelected = true;
@@ -116,8 +138,43 @@ public class UnitSelectionManager : MonoBehaviour
                 }
             }
 
+
             OnSelectionAreaEnd?.Invoke(this, EventArgs.Empty);
             OnSelectedEntitiesChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (SpecialSkillsManager.Instance.IsAirstrikeButtonActive())
+            {
+                // Aitstrike active, start airstrike
+                UnityEngine.Ray cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(cameraRay, out UnityEngine.RaycastHit raycastHit, 999f))
+                {
+                    SpecialSkillsManager.Instance.UseAirstrikeSkill(raycastHit.point);
+                }
+            }
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (SpecialSkillsManager.Instance.IsAirstrikeButtonActive())
+            {
+                // Aitstrike active, start airstrike
+                SpecialSkillsManager.Instance.SetIsAirstrikeButtonActive(false);
+            }
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            selectionStartMousePosition = Input.mousePosition;
+
+            OnSelectionAreaStart?.Invoke(this, EventArgs.Empty);
         }
 
         if (Input.GetMouseButtonDown(1))
@@ -126,9 +183,7 @@ public class UnitSelectionManager : MonoBehaviour
 
             EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-            EntityQuery entityQuery = new EntityQueryBuilder(Allocator.Temp)
-                    .WithAll<PhysicsWorldSingleton>().Build(entityManager);
-
+            EntityQuery entityQuery = entityManager.CreateEntityQuery(typeof(PhysicsWorldSingleton));
             PhysicsWorldSingleton physicsWorldSingleton = entityQuery.GetSingleton<PhysicsWorldSingleton>();
             CollisionWorld collisionWorld = physicsWorldSingleton.CollisionWorld;
             UnityEngine.Ray cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -144,28 +199,23 @@ public class UnitSelectionManager : MonoBehaviour
                     GroupIndex = 0,
                 }
             };
-
             bool isAttackingSingleTarget = false;
-
             if (collisionWorld.CastRay(raycastInput, out Unity.Physics.RaycastHit raycastHit))
             {
                 if (entityManager.HasComponent<Faction>(raycastHit.Entity))
                 {
-                    // HIT SOMETHING WITH A FACTION COMPONENT
+                    // Hit something with a Faction
                     Faction faction = entityManager.GetComponentData<Faction>(raycastHit.Entity);
                     if (faction.factionType == FactionType.Zombie)
                     {
-                        // RIGHT CLICKING ON A ZOMBIE
+                        // Right clicking on a Zombie
                         isAttackingSingleTarget = true;
 
-                        entityQuery =
-                            new EntityQueryBuilder(Allocator.Temp).WithAll<Selected>().WithPresent<TargetOverride>().Build(entityManager);
+                        entityQuery = new EntityQueryBuilder(Allocator.Temp).WithAll<Selected>().WithPresent<TargetOverride>().Build(entityManager);
 
                         NativeArray<Entity> entityArray = entityQuery.ToEntityArray(Allocator.Temp);
-                        NativeArray<TargetOverride> targetOverrideArray =
-                            entityQuery.ToComponentDataArray<TargetOverride>(Allocator.Temp);
-
-                        for (int i = 0; i < targetOverrideArray.Length; ++i)
+                        NativeArray<TargetOverride> targetOverrideArray = entityQuery.ToComponentDataArray<TargetOverride>(Allocator.Temp);
+                        for (int i = 0; i < targetOverrideArray.Length; i++)
                         {
                             TargetOverride targetOverride = targetOverrideArray[i];
                             targetOverride.targetEntity = raycastHit.Entity;
@@ -179,22 +229,15 @@ public class UnitSelectionManager : MonoBehaviour
 
             if (!isAttackingSingleTarget)
             {
-                entityQuery =
-                    new EntityQueryBuilder(Allocator.Temp).WithAll<Selected>()
-                        .WithPresent<MoveOverride, TargetOverride, TargetPositionPathQueued, FlowFieldPathRequest, FlowFieldFollower>()
-                        .Build(entityManager);
+                entityQuery = new EntityQueryBuilder(Allocator.Temp).WithAll<Selected>()
+                    .WithPresent<MoveOverride, TargetOverride, TargetPositionPathQueued, FlowFieldPathRequest, FlowFieldFollower>().Build(entityManager);
 
                 NativeArray<Entity> entityArray = entityQuery.ToEntityArray(Allocator.Temp);
-                NativeArray<MoveOverride> moveOverrideArray =
-                    entityQuery.ToComponentDataArray<MoveOverride>(Allocator.Temp);
-                NativeArray<TargetOverride> targetOverrideArray =
-                    entityQuery.ToComponentDataArray<TargetOverride>(Allocator.Temp);
-                NativeArray<TargetPositionPathQueued> targetPositionPathQueuedArray =
-                    entityQuery.ToComponentDataArray<TargetPositionPathQueued>(Allocator.Temp);
-
+                NativeArray<MoveOverride> moveOverrideArray = entityQuery.ToComponentDataArray<MoveOverride>(Allocator.Temp);
+                NativeArray<TargetOverride> targetOverrideArray = entityQuery.ToComponentDataArray<TargetOverride>(Allocator.Temp);
+                NativeArray<TargetPositionPathQueued> targetPositionPathQueuedArray = entityQuery.ToComponentDataArray<TargetPositionPathQueued>(Allocator.Temp);
                 NativeArray<float3> movePositionArray = GenerateMovePositionArray(mouseWorldPosition, entityArray.Length);
-
-                for (int i = 0; i < moveOverrideArray.Length; ++i)
+                for (int i = 0; i < moveOverrideArray.Length; i++)
                 {
                     MoveOverride moveOverride = moveOverrideArray[i];
                     moveOverride.targetPosition = movePositionArray[i];
@@ -218,17 +261,14 @@ public class UnitSelectionManager : MonoBehaviour
                 entityQuery.CopyFromComponentDataArray(targetPositionPathQueuedArray);
             }
 
-            // HANDLE BARRACKS RALLY POSITION
+
+            // Handle Barracks Rally Position
             entityQuery =
-                    new EntityQueryBuilder(Allocator.Temp).WithAll<Selected, BuildingBarracks, LocalTransform>().Build(entityManager);
+                new EntityQueryBuilder(Allocator.Temp).WithAll<Selected, BuildingBarracks, LocalTransform>().Build(entityManager);
 
-            NativeArray<BuildingBarracks> buildingBarracksArray =
-                entityQuery.ToComponentDataArray<BuildingBarracks>(Allocator.Temp);
-            
-            NativeArray<LocalTransform> localTransformArray =
-                entityQuery.ToComponentDataArray<LocalTransform>(Allocator.Temp);
-
-            for (int i = 0; i < buildingBarracksArray.Length; ++i)
+            NativeArray<BuildingBarracks> buildingBarracksArray = entityQuery.ToComponentDataArray<BuildingBarracks>(Allocator.Temp);
+            NativeArray<LocalTransform> localTransformArray = entityQuery.ToComponentDataArray<LocalTransform>(Allocator.Temp);
+            for (int i = 0; i < buildingBarracksArray.Length; i++)
             {
                 BuildingBarracks buildingBarracks = buildingBarracksArray[i];
                 buildingBarracks.rallyPositionOffset = (float3)mouseWorldPosition - localTransformArray[i].Position;
@@ -242,20 +282,15 @@ public class UnitSelectionManager : MonoBehaviour
     {
         Vector2 selectionEndMousePosition = Input.mousePosition;
 
-        Vector2 lowerLeftCorner = new Vector2
-        (
+        Vector2 lowerLeftCorner = new Vector2(
             Mathf.Min(selectionStartMousePosition.x, selectionEndMousePosition.x),
-            Mathf.Min(selectionStartMousePosition.y, selectionEndMousePosition.y)
-        );
+            Mathf.Min(selectionStartMousePosition.y, selectionEndMousePosition.y));
 
-        Vector2 upperRightCorner = new Vector2
-        (
+        Vector2 upperRightCorner = new Vector2(
             Mathf.Max(selectionStartMousePosition.x, selectionEndMousePosition.x),
-            Mathf.Max(selectionStartMousePosition.y, selectionEndMousePosition.y)
-        );
+            Mathf.Max(selectionStartMousePosition.y, selectionEndMousePosition.y));
 
-        return new Rect
-        (
+        return new Rect(
             lowerLeftCorner.x,
             lowerLeftCorner.y,
             upperRightCorner.x - lowerLeftCorner.x,
@@ -266,12 +301,15 @@ public class UnitSelectionManager : MonoBehaviour
     private NativeArray<float3> GenerateMovePositionArray(float3 targetPosition, int positionCount)
     {
         NativeArray<float3> positionArray = new NativeArray<float3>(positionCount, Allocator.Temp);
-
-        if (positionCount == 0) { return positionArray; }
-
+        if (positionCount == 0)
+        {
+            return positionArray;
+        }
         positionArray[0] = targetPosition;
-
-        if (positionCount == 1) { return positionArray; }
+        if (positionCount == 1)
+        {
+            return positionArray;
+        }
 
         float ringSize = 2.2f;
         int ring = 0;
@@ -281,7 +319,7 @@ public class UnitSelectionManager : MonoBehaviour
         {
             int ringPositionCount = 3 + ring * 2;
 
-            for (int i = 0; i < ringPositionCount; ++i)
+            for (int i = 0; i < ringPositionCount; i++)
             {
                 float angle = i * (math.PI2 / ringPositionCount);
                 float3 ringVector = math.rotate(quaternion.RotateY(angle), new float3(ringSize * (ring + 1), 0, 0));
@@ -290,12 +328,31 @@ public class UnitSelectionManager : MonoBehaviour
                 positionArray[positionIndex] = ringPosition;
                 positionIndex++;
 
-                if (positionIndex >= positionCount) { break; }
+                if (positionIndex >= positionCount)
+                {
+                    break;
+                }
             }
-
             ring++;
         }
 
         return positionArray;
     }
+
+    public static void DeselectAllUnits()
+    {
+        EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        EntityQuery entityQuery = new EntityQueryBuilder(Allocator.Temp).WithAll<Selected>().Build(entityManager);
+
+        NativeArray<Entity> entityArray = entityQuery.ToEntityArray(Allocator.Temp);
+        NativeArray<Selected> selectedArray = entityQuery.ToComponentDataArray<Selected>(Allocator.Temp);
+        for (int i = 0; i < entityArray.Length; i++)
+        {
+            entityManager.SetComponentEnabled<Selected>(entityArray[i], false);
+            Selected selected = selectedArray[i];
+            selected.onDeselected = true;
+            entityManager.SetComponentData(entityArray[i], selected);
+        }
+    }
+
 }

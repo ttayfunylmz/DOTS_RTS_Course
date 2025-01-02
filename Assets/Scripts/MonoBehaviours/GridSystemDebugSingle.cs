@@ -2,10 +2,14 @@ using UnityEngine;
 
 public class GridSystemDebugSingle : MonoBehaviour
 {
+
+
     [SerializeField] private SpriteRenderer spriteRenderer;
+
 
     private int x;
     private int y;
+
 
     public void Setup(int x, int y, float gridNodeSize)
     {
@@ -14,6 +18,7 @@ public class GridSystemDebugSingle : MonoBehaviour
 
         transform.position = GridSystem.GetWorldPosition(x, y, gridNodeSize);
     }
+
 
     public void SetColor(Color color)
     {
@@ -30,4 +35,5 @@ public class GridSystemDebugSingle : MonoBehaviour
         spriteRenderer.transform.rotation = rotation;
         spriteRenderer.transform.rotation *= Quaternion.Euler(90, 0, 90);
     }
+
 }

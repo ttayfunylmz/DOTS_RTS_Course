@@ -4,17 +4,25 @@ using UnityEngine;
 
 public class ResourceManager : MonoBehaviour
 {
+
+
     public static ResourceManager Instance { get; private set; }
+
 
     public event EventHandler OnResourceAmountChanged;
 
+
+
     [SerializeField] private ResourceTypeListSO resourceTypeListSO;
 
+
     private Dictionary<ResourceTypeSO.ResourceType, int> resourceTypeAmountDictionary;
+
 
     private void Awake()
     {
         Instance = this;
+
 
         resourceTypeAmountDictionary = new Dictionary<ResourceTypeSO.ResourceType, int>();
 
@@ -46,9 +54,9 @@ public class ResourceManager : MonoBehaviour
 
     public bool CanSpendResourceAmount(ResourceAmount[] resourceAmountArray)
     {
-        foreach(ResourceAmount resourceAmount in resourceAmountArray)
+        foreach (ResourceAmount resourceAmount in resourceAmountArray)
         {
-            if(resourceTypeAmountDictionary[resourceAmount.resourceType] < resourceAmount.amount)
+            if (resourceTypeAmountDictionary[resourceAmount.resourceType] < resourceAmount.amount)
             {
                 return false;
             }
@@ -70,4 +78,5 @@ public class ResourceManager : MonoBehaviour
         }
         OnResourceAmountChanged?.Invoke(this, EventArgs.Empty);
     }
+
 }

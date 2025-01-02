@@ -1,16 +1,19 @@
 using Unity.Entities;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "UnitTypeSO", menuName = "ScriptableObjects/UnitTypeSO")]
+[CreateAssetMenu()]
 public class UnitTypeSO : ScriptableObject
 {
-    public enum UnitType : byte
+
+
+    public enum UnitType
     {
         None,
         Soldier,
         Scout,
-        Zombie
+        Zombie,
     }
+
 
     public UnitType unitType;
     public Transform ragdollPrefab;
@@ -18,14 +21,16 @@ public class UnitTypeSO : ScriptableObject
     public Sprite sprite;
     public ResourceAmount[] spawnCostResourceAmountArray;
 
+
     public Entity GetPrefabEntity(EntitiesReferences entitiesReferences)
     {
         return unitType switch
         {
-            UnitType.Soldier => entitiesReferences.soldierPrefabEntity,
             UnitType.Scout => entitiesReferences.scoutPrefabEntity,
             UnitType.Zombie => entitiesReferences.zombiePrefabEntity,
             _ => entitiesReferences.soldierPrefabEntity,
         };
     }
+
+
 }

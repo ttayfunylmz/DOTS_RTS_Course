@@ -1,4 +1,3 @@
-using System;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -6,30 +5,33 @@ using UnityEngine.UI;
 
 public class BuildingBarracksUI : MonoBehaviour
 {
+
+
     [SerializeField] private Button soldierButton;
     [SerializeField] private Button scoutButton;
     [SerializeField] private Image progressBarImage;
     [SerializeField] private RectTransform unitQueueContainer;
     [SerializeField] private RectTransform unitQueueTemplate;
 
+
     private Entity buildingBarracksEntity;
     private EntityManager entityManager;
+
 
     private void Awake()
     {
         soldierButton.onClick.AddListener(() =>
         {
             UnitTypeSO unitTypeSO = GameAssets.Instance.unitTypeListSO.GetUnitTypeSO(UnitTypeSO.UnitType.Soldier);
-            if(!ResourceManager.Instance.CanSpendResourceAmount(unitTypeSO.spawnCostResourceAmountArray))
+            if (!ResourceManager.Instance.CanSpendResourceAmount(unitTypeSO.spawnCostResourceAmountArray))
             {
                 return;
             }
-
             ResourceManager.Instance.SpendResourceAmount(unitTypeSO.spawnCostResourceAmountArray);
 
             entityManager.SetComponentData(buildingBarracksEntity, new BuildingBarracksUnitEnqueue
             {
-                unitType = UnitTypeSO.UnitType.Soldier
+                unitType = UnitTypeSO.UnitType.Soldier,
             });
             entityManager.SetComponentEnabled<BuildingBarracksUnitEnqueue>(buildingBarracksEntity, true);
         });
@@ -37,16 +39,15 @@ public class BuildingBarracksUI : MonoBehaviour
         scoutButton.onClick.AddListener(() =>
         {
             UnitTypeSO unitTypeSO = GameAssets.Instance.unitTypeListSO.GetUnitTypeSO(UnitTypeSO.UnitType.Scout);
-            if(!ResourceManager.Instance.CanSpendResourceAmount(unitTypeSO.spawnCostResourceAmountArray))
+            if (!ResourceManager.Instance.CanSpendResourceAmount(unitTypeSO.spawnCostResourceAmountArray))
             {
                 return;
             }
-
             ResourceManager.Instance.SpendResourceAmount(unitTypeSO.spawnCostResourceAmountArray);
 
             entityManager.SetComponentData(buildingBarracksEntity, new BuildingBarracksUnitEnqueue
             {
-                unitType = UnitTypeSO.UnitType.Scout
+                unitType = UnitTypeSO.UnitType.Scout,
             });
             entityManager.SetComponentEnabled<BuildingBarracksUnitEnqueue>(buildingBarracksEntity, true);
         });
@@ -64,11 +65,11 @@ public class BuildingBarracksUI : MonoBehaviour
         Hide();
     }
 
-    private void DOTSEventsManager_OnBarracksUnitQueueChanged(object sender, EventArgs e)
+    private void DOTSEventsManager_OnBarracksUnitQueueChanged(object sender, System.EventArgs e)
     {
         Entity entity = (Entity)sender;
 
-        if(entity == buildingBarracksEntity)
+        if (entity == buildingBarracksEntity)
         {
             UpdateUnitQueueVisual();
         }
@@ -79,7 +80,7 @@ public class BuildingBarracksUI : MonoBehaviour
         UpdateProgressBarVisual();
     }
 
-    private void UnitSelectionManager_OnSelectedEntitiesChanged(object sender, EventArgs e)
+    private void UnitSelectionManager_OnSelectedEntitiesChanged(object sender, System.EventArgs e)
     {
         EntityQuery entityQuery = new EntityQueryBuilder(Allocator.Temp).WithAll<Selected, BuildingBarracks>().Build(entityManager);
 
@@ -87,8 +88,9 @@ public class BuildingBarracksUI : MonoBehaviour
 
         if (entityArray.Length > 0)
         {
-            // SELECTED A BARRACKS
+            // Selected a barracks
             buildingBarracksEntity = entityArray[0];
+
             Show();
             UpdateProgressBarVisual();
             UpdateUnitQueueVisual();
@@ -96,6 +98,7 @@ public class BuildingBarracksUI : MonoBehaviour
         else
         {
             buildingBarracksEntity = Entity.Null;
+
             Hide();
         }
     }
@@ -108,7 +111,8 @@ public class BuildingBarracksUI : MonoBehaviour
             return;
         }
 
-        BuildingBarracks buildingBarracks = entityManager.GetComponentData<BuildingBarracks>(buildingBarracksEntity);
+        BuildingBarracks buildingBarracks =
+            entityManager.GetComponentData<BuildingBarracks>(buildingBarracksEntity);
 
         if (buildingBarracks.activeUnitType == UnitTypeSO.UnitType.None)
         {
@@ -122,19 +126,19 @@ public class BuildingBarracksUI : MonoBehaviour
 
     private void UpdateUnitQueueVisual()
     {
-        foreach(Transform child in unitQueueContainer)
+        foreach (Transform child in unitQueueContainer)
         {
-            if(child == unitQueueTemplate)
+            if (child == unitQueueTemplate)
             {
                 continue;
             }
             Destroy(child.gameObject);
         }
 
-        DynamicBuffer<SpawnUnitTypeBuffer> spawnUnitTypeDynamicBuffer
-            = entityManager.GetBuffer<SpawnUnitTypeBuffer>(buildingBarracksEntity, true);
-        
-        foreach(SpawnUnitTypeBuffer spawnUnitTypeBuffer in spawnUnitTypeDynamicBuffer)
+        DynamicBuffer<SpawnUnitTypeBuffer> spawnUnitTypeDynamicBuffer =
+            entityManager.GetBuffer<SpawnUnitTypeBuffer>(buildingBarracksEntity, true);
+
+        foreach (SpawnUnitTypeBuffer spawnUnitTypeBuffer in spawnUnitTypeDynamicBuffer)
         {
             RectTransform unitQueueRectTransform = Instantiate(unitQueueTemplate, unitQueueContainer);
             unitQueueRectTransform.gameObject.SetActive(true);
@@ -153,4 +157,5 @@ public class BuildingBarracksUI : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
 }

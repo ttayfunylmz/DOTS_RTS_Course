@@ -992,7 +992,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 944685194496642680}
-  - component: {fileID: 8199899472581154769}
+  - component: {fileID: -2599895297988786438}
   m_Layer: 0
   m_Name: SoldierRagdoll
   m_TagString: Untagged
@@ -1017,7 +1017,7 @@ Transform:
   - {fileID: 2765308569335722840}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8199899472581154769
+--- !u!114 &-2599895297988786438
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1026,7 +1026,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3823508845899425078}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ddd514bf471e154d97653e5e9abaf08, type: 3}
+  m_Script: {fileID: 11500000, guid: cc07c20a9fb81ba4da811b657747c2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &3967519708247790444

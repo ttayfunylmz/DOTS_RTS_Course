@@ -9,8 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76a8c9e47c075894eb7dc6784526cba6, type: 3}
+  m_Script: {fileID: 11500000, guid: 86a4cdcdbe80f6a4bb9c42ae3db78174, type: 3}
   m_Name: ZombieSpawner
   m_EditorClassIdentifier: 
+  nameString: Zombie Building Spawner
   buildingType: 1
-  prefab: {fileID: 4033947902426584662, guid: 196ce274b6515e446a7100d115e69fbb, type: 3}
+  buildingConstructionTimerMax: 0
+  constructionYOffset: 0
+  prefab: {fileID: 4979431483043242857, guid: 74ee81b82c7e3804db96b733838f6e04, type: 3}
+  buildingDistanceMin: 0
+  showInBuildingPlacementManagerUI: 0
+  sprite: {fileID: 0}
+  visualPrefab: {fileID: 0}
+  buildCostResourceAmountArray: []

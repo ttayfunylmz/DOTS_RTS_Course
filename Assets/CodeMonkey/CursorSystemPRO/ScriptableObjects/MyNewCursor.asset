@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7896ae0a27e62b04f878b65061fefd99, type: 3}
+  m_Name: MyNewCursor
+  m_EditorClassIdentifier: 
+  textureArray: []
+  spriteArray:
+  - {fileID: -8433096542531308810, guid: 13dc32e2289968e42a927c4e157e8790, type: 3}
+  - {fileID: -4882582221087892435, guid: 13dc32e2289968e42a927c4e157e8790, type: 3}
+  - {fileID: 1783425737283058856, guid: 13dc32e2289968e42a927c4e157e8790, type: 3}
+  - {fileID: 7400504260689845122, guid: 13dc32e2289968e42a927c4e157e8790, type: 3}
+  frameRate: 5
+  offset: {x: 29.05, y: 27.77}

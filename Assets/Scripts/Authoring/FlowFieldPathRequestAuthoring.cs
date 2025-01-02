@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class FlowFieldPathRequestAuthoring : MonoBehaviour
 {
+
+
+
     public class Baker : Baker<FlowFieldPathRequestAuthoring>
     {
+
+
         public override void Bake(FlowFieldPathRequestAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
@@ -13,9 +18,14 @@ public class FlowFieldPathRequestAuthoring : MonoBehaviour
             SetComponentEnabled<FlowFieldPathRequest>(entity, false);
         }
     }
+
+
 }
+
 
 public struct FlowFieldPathRequest : IComponentData, IEnableableComponent
 {
+
     public float3 targetPosition;
+
 }

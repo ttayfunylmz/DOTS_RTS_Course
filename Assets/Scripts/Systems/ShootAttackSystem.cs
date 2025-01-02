@@ -2,9 +2,11 @@ using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
 partial struct ShootAttackSystem : ISystem
 {
+
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
@@ -24,28 +26,32 @@ partial struct ShootAttackSystem : ISystem
             EnabledRefRW<TargetPositionPathQueued> targetPositionPathQueuedEnabled,
             RefRW<UnitMover> unitMover,
             Entity entity)
-                in SystemAPI.Query<
-                    RefRW<LocalTransform>,
-                    RefRW<ShootAttack>,
-                    RefRO<Target>,
-                    RefRW<TargetPositionPathQueued>,
-                    EnabledRefRW<TargetPositionPathQueued>,
-                    RefRW<UnitMover>>().WithDisabled<MoveOverride>().WithPresent<TargetPositionPathQueued>().WithEntityAccess())
+            in SystemAPI.Query<
+                RefRW<LocalTransform>,
+                RefRW<ShootAttack>,
+                RefRO<Target>,
+                RefRW<TargetPositionPathQueued>,
+                EnabledRefRW<TargetPositionPathQueued>,
+                RefRW<UnitMover>>().WithDisabled<MoveOverride>().WithPresent<TargetPositionPathQueued>().WithEntityAccess())
         {
-            if (target.ValueRO.targetEntity == Entity.Null) { continue; }
+
+            if (target.ValueRO.targetEntity == Entity.Null)
+            {
+                continue;
+            }
 
             LocalTransform targetLocalTransform = SystemAPI.GetComponent<LocalTransform>(target.ValueRO.targetEntity);
 
             if (math.distance(localTransform.ValueRO.Position, targetLocalTransform.Position) > shootAttack.ValueRO.attackDistance)
             {
-                // TOO FAR, MOVE CLOSER
+                // Too far, move closer
                 targetPositionPathQueued.ValueRW.targetPosition = targetLocalTransform.Position;
                 targetPositionPathQueuedEnabled.ValueRW = true;
                 continue;
             }
             else
             {
-                // CLOSE ENOUGH, STOP MOVING & ATTACK
+                // Close enough, stop moving and attack
                 targetPositionPathQueued.ValueRW.targetPosition = localTransform.ValueRO.Position;
                 targetPositionPathQueuedEnabled.ValueRW = true;
             }
@@ -63,31 +69,37 @@ partial struct ShootAttackSystem : ISystem
             RefRW<ShootAttack> shootAttack,
             RefRO<Target> target,
             Entity entity)
-                in SystemAPI.Query<
-                    RefRW<LocalTransform>,
-                    RefRW<ShootAttack>,
-                    RefRO<Target>>().WithEntityAccess())
+            in SystemAPI.Query<
+                RefRW<LocalTransform>,
+                RefRW<ShootAttack>,
+                RefRO<Target>>().WithEntityAccess())
         {
-            if (target.ValueRO.targetEntity == Entity.Null) { continue; }
 
-            LocalTransform targetLocalTransform = SystemAPI.GetComponent<LocalTransform>(target.ValueRO.targetEntity);
-
-            if(math.distance(localTransform.ValueRO.Position, targetLocalTransform.Position) > shootAttack.ValueRO.attackDistance)
+            if (target.ValueRO.targetEntity == Entity.Null)
             {
-                // TARGET IS TOO FAR
                 continue;
             }
 
-            if(SystemAPI.HasComponent<MoveOverride>(entity) && SystemAPI.IsComponentEnabled<MoveOverride>(entity))
+            LocalTransform targetLocalTransform = SystemAPI.GetComponent<LocalTransform>(target.ValueRO.targetEntity);
+
+            if (math.distance(localTransform.ValueRO.Position, targetLocalTransform.Position) > shootAttack.ValueRO.attackDistance)
             {
-                // MOVE OVERRIDE IS ACTIVE
+                // Target is too far
+                continue;
+            }
+
+            if (SystemAPI.HasComponent<MoveOverride>(entity) && SystemAPI.IsComponentEnabled<MoveOverride>(entity))
+            {
+                // Move override is active
                 continue;
             }
 
             shootAttack.ValueRW.timer -= SystemAPI.Time.DeltaTime;
-            if (shootAttack.ValueRO.timer > 0f) { continue; }
+            if (shootAttack.ValueRO.timer > 0f)
+            {
+                continue;
+            }
             shootAttack.ValueRW.timer = shootAttack.ValueRO.timerMax;
-
 
             if (SystemAPI.HasComponent<TargetOverride>(target.ValueRO.targetEntity))
             {
@@ -111,6 +123,6 @@ partial struct ShootAttackSystem : ISystem
             shootAttack.ValueRW.onShoot.isTriggered = true;
             shootAttack.ValueRW.onShoot.shootFromPosition = bulletSpawnWorldPosition;
         }
-
     }
+
 }

@@ -1,7 +1,5 @@
 using Unity.Entities;
-using Unity.Rendering;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class ActiveAnimationAuthoring : MonoBehaviour
 {
@@ -12,6 +10,7 @@ public class ActiveAnimationAuthoring : MonoBehaviour
         public override void Bake(ActiveAnimationAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
+
             AddComponent(entity, new ActiveAnimation
             {
                 nextAnimationType = authoring.nextAnimationType,

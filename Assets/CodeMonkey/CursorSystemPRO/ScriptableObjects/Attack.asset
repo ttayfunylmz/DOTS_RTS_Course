@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7896ae0a27e62b04f878b65061fefd99, type: 3}
+  m_Name: Attack
+  m_EditorClassIdentifier: 
+  textureArray:
+  - {fileID: 2800000, guid: 0f178b5f3bab92049abef983243ba5e2, type: 3}
+  - {fileID: 2800000, guid: ede991f2c6b0ba04ebd7b9ab74bc4906, type: 3}
+  - {fileID: 2800000, guid: cba5b1a6a52361e43a0232977784bbba, type: 3}
+  - {fileID: 2800000, guid: a27e57c8fe5115f48b1d19d71331c023, type: 3}
+  - {fileID: 2800000, guid: 42a3165e6e538354bb7f566de921e752, type: 3}
+  - {fileID: 2800000, guid: e35073a314f89184c86cfa5f6d18e417, type: 3}
+  - {fileID: 2800000, guid: f2adeead9b357994db570d498fdaf864, type: 3}
+  - {fileID: 2800000, guid: 5080c098eae32124cbb612a4898ae6cc, type: 3}
+  - {fileID: 2800000, guid: 2e93533745b745f4783b76a51305205f, type: 3}
+  frameRate: 20
+  offset: {x: 16, y: 16}

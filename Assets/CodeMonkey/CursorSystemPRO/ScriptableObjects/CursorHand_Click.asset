@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7896ae0a27e62b04f878b65061fefd99, type: 3}
+  m_Name: CursorHand_Click
+  m_EditorClassIdentifier: 
+  textureArray:
+  - {fileID: 2800000, guid: e7f71f54b8894a141a2473deda3a687a, type: 3}
+  frameRate: 0
+  offset: {x: 21.12, y: 17.41}

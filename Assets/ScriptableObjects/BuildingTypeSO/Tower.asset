@@ -9,13 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76a8c9e47c075894eb7dc6784526cba6, type: 3}
+  m_Script: {fileID: 11500000, guid: 86a4cdcdbe80f6a4bb9c42ae3db78174, type: 3}
   m_Name: Tower
   m_EditorClassIdentifier: 
+  nameString: Tower
   buildingType: 2
   buildingConstructionTimerMax: 10
   constructionYOffset: -10.33
-  prefab: {fileID: 7026086510493166303, guid: 776e10a24948eff45b2827a364454878, type: 3}
+  prefab: {fileID: 815115309409675124, guid: f239708c72cfd54448b296f9965ba703, type: 3}
   buildingDistanceMin: 10
   showInBuildingPlacementManagerUI: 1
   sprite: {fileID: 21300000, guid: 251009f30697ae940904ab5c27e31833, type: 3}

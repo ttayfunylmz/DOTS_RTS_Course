@@ -4,14 +4,21 @@ using UnityEngine;
 
 public class RandomWalkingAuthoring : MonoBehaviour
 {
+
+
+
     public float3 targetPosition;
     public float3 originPosition;
     public float distanceMin;
     public float distanceMax;
-    public uint randomSeed; 
+    public uint randomSeed;
+
+
 
     public class Baker : Baker<RandomWalkingAuthoring>
     {
+
+
         public override void Bake(RandomWalkingAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
@@ -25,10 +32,13 @@ public class RandomWalkingAuthoring : MonoBehaviour
             });
         }
     }
+
 }
+
 
 public struct RandomWalking : IComponentData
 {
+
     public float3 targetPosition;
     public float3 originPosition;
     public float distanceMin;

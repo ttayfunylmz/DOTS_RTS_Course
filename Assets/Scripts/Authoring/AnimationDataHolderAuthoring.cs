@@ -1,8 +1,6 @@
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Rendering;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class AnimationDataHolderAuthoring : MonoBehaviour
 {
@@ -17,11 +15,11 @@ public class AnimationDataHolderAuthoring : MonoBehaviour
             AnimationDataHolder animationDataHolder = new AnimationDataHolder();
 
             int index = 0;
-            foreach(AnimationDataSO.AnimationType animationType in System.Enum.GetValues(typeof(AnimationDataSO.AnimationType)))
+            foreach (AnimationDataSO.AnimationType animationType in System.Enum.GetValues(typeof(AnimationDataSO.AnimationType)))
             {
                 AnimationDataSO animationDataSO = authoring.animationDataListSO.GetAnimationDataSO(animationType);
 
-                for(int i = 0; i < animationDataSO.meshArray.Length; ++i)
+                for (int i = 0; i < animationDataSO.meshArray.Length; i++)
                 {
                     Mesh mesh = animationDataSO.meshArray[i];
 
@@ -31,12 +29,12 @@ public class AnimationDataHolderAuthoring : MonoBehaviour
                     AddComponent(additionalEntity, new RenderMeshUnmanaged
                     {
                         materialForSubMesh = authoring.defaultMaterial,
-                        mesh = mesh
+                        mesh = mesh,
                     });
                     AddComponent(additionalEntity, new AnimationDataHolderSubEntity
                     {
                         animationType = animationType,
-                        meshIndex = i
+                        meshIndex = i,
                     });
                 }
 
@@ -45,7 +43,7 @@ public class AnimationDataHolderAuthoring : MonoBehaviour
 
             AddComponent(entity, new AnimationDataHolderObjectData
             {
-                animationDataListSO = authoring.animationDataListSO
+                animationDataListSO = authoring.animationDataListSO,
             });
 
             AddComponent(entity, animationDataHolder);

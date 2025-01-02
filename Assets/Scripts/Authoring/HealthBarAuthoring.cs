@@ -3,11 +3,16 @@ using UnityEngine;
 
 public class HealthBarAuthoring : MonoBehaviour
 {
+
+
     public GameObject barVisualGameObject;
     public GameObject healthGameObject;
 
+
     public class Baker : Baker<HealthBarAuthoring>
     {
+
+
         public override void Bake(HealthBarAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
@@ -18,10 +23,15 @@ public class HealthBarAuthoring : MonoBehaviour
             });
         }
     }
+
 }
+
+
 
 public struct HealthBar : IComponentData
 {
+
     public Entity barVisualEntity;
     public Entity healthEntity;
+
 }

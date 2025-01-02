@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2352976359353968554
+--- !u!1 &288859354210988870
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1224546146240071049}
-  - component: {fileID: 8220898927856040923}
+  - component: {fileID: 5499618564590077600}
+  - component: {fileID: 3134143773880721474}
   m_Layer: 8
   m_Name: PathfindingWall
   m_TagString: Untagged
@@ -17,28 +17,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1224546146240071049
+--- !u!4 &5499618564590077600
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2352976359353968554}
+  m_GameObject: {fileID: 288859354210988870}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 8, y: 1, z: 8}
+  m_LocalPosition: {x: -0.0097, y: 0, z: -0.2777}
+  m_LocalScale: {x: 8.509141, y: 1, z: 6.895195}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8197403541643441236}
+  m_Father: {fileID: 4361874722621425042}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &8220898927856040923
+--- !u!65 &3134143773880721474
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2352976359353968554}
+  m_GameObject: {fileID: 288859354210988870}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -53,7 +53,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &3980959751759468398
+--- !u!1 &8400495719930424975
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -61,10 +61,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8197403541643441236}
-  - component: {fileID: 3058054379305663750}
-  - component: {fileID: 2253276926058804677}
-  - component: {fileID: 3434710645626924188}
+  - component: {fileID: 4361874722621425042}
+  - component: {fileID: 7254633927164655890}
+  - component: {fileID: 4845288809415759584}
+  - component: {fileID: 2763579875458557297}
   m_Layer: 0
   m_Name: ResourceNodeGold
   m_TagString: Untagged
@@ -72,55 +72,42 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8197403541643441236
+--- !u!4 &4361874722621425042
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3980959751759468398}
+  m_GameObject: {fileID: 8400495719930424975}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2873297022212216748}
-  - {fileID: 1224546146240071049}
+  - {fileID: 8709744074339863508}
+  - {fileID: 5499618564590077600}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3058054379305663750
+--- !u!114 &7254633927164655890
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3980959751759468398}
+  m_GameObject: {fileID: 8400495719930424975}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c16549610bfe4458aa9389201d072bb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2253276926058804677
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3980959751759468398}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65312f7e92f733345b91d105e7cd07e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resourceType: 2
---- !u!65 &3434710645626924188
+--- !u!65 &4845288809415759584
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3980959751759468398}
+  m_GameObject: {fileID: 8400495719930424975}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -133,15 +120,28 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 7.5, y: 1, z: 7.5}
+  m_Size: {x: 7.68, y: 1, z: 7.64}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1001 &3031841094403096943
+--- !u!114 &2763579875458557297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8400495719930424975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9b4e30c38405694b99dd388a19de36e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resourceType: 2
+--- !u!1001 &8443256530432089367
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 8197403541643441236}
+    m_TransformParent: {fileID: 4361874722621425042}
     m_Modifications:
     - target: {fileID: 1005220819320805059, guid: b295dd178bf8d7e4c994cf606364b191, type: 3}
       propertyPath: m_LocalPosition.x
@@ -192,8 +192,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b295dd178bf8d7e4c994cf606364b191, type: 3}
---- !u!4 &2873297022212216748 stripped
+--- !u!4 &8709744074339863508 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1005220819320805059, guid: b295dd178bf8d7e4c994cf606364b191, type: 3}
-  m_PrefabInstance: {fileID: 3031841094403096943}
+  m_PrefabInstance: {fileID: 8443256530432089367}
   m_PrefabAsset: {fileID: 0}

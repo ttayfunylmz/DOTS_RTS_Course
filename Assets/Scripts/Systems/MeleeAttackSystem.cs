@@ -7,6 +7,8 @@ using Unity.Transforms;
 
 partial struct MeleeAttackSystem : ISystem
 {
+
+
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
@@ -20,26 +22,29 @@ partial struct MeleeAttackSystem : ISystem
             RefRO<Target> target,
             RefRW<TargetPositionPathQueued> targetPositionPathQueued,
             EnabledRefRW<TargetPositionPathQueued> targetPositionPathQueuedEnabled)
-                in SystemAPI.Query<
-                    RefRO<LocalTransform>,
-                    RefRW<MeleeAttack>,
-                    RefRO<Target>,
-                    RefRW<TargetPositionPathQueued>,
-                    EnabledRefRW<TargetPositionPathQueued>>().WithDisabled<MoveOverride>().WithPresent<TargetPositionPathQueued>())
+            in SystemAPI.Query<
+                RefRO<LocalTransform>,
+                RefRW<MeleeAttack>,
+                RefRO<Target>,
+                RefRW<TargetPositionPathQueued>,
+                EnabledRefRW<TargetPositionPathQueued>>().WithDisabled<MoveOverride>().WithPresent<TargetPositionPathQueued>())
         {
-            if(target.ValueRO.targetEntity == Entity.Null) { continue; }
+
+            if (target.ValueRO.targetEntity == Entity.Null)
+            {
+                continue;
+            }
+
 
             LocalTransform targetLocalTransform = SystemAPI.GetComponent<LocalTransform>(target.ValueRO.targetEntity);
-
             float meleeAttackDistanceSq = 2f;
             bool isCloseEnoughToAttack = math.distancesq(localTransform.ValueRO.Position, targetLocalTransform.Position) < meleeAttackDistanceSq;
-            bool isTouchingTarget = false;
 
-            if(!isCloseEnoughToAttack)
+            bool isTouchingTarget = false;
+            if (!isCloseEnoughToAttack)
             {
                 float3 dirToTarget = targetLocalTransform.Position - localTransform.ValueRO.Position;
                 dirToTarget = math.normalize(dirToTarget);
-                
                 float distanceExtraToTestRaycast = .4f;
                 RaycastInput raycastInput = new RaycastInput
                 {
@@ -49,18 +54,17 @@ partial struct MeleeAttackSystem : ISystem
                     {
                         BelongsTo = ~0u,
                         CollidesWith = 1u << GameAssets.UNITS_LAYER | 1u << GameAssets.BUILDINGS_LAYER,
-                        GroupIndex = 0
-                    }
+                        GroupIndex = 0,
+                    },
                 };
                 raycastHitList.Clear();
-
-                if(collisionWorld.CastRay(raycastInput, ref raycastHitList))
+                if (collisionWorld.CastRay(raycastInput, ref raycastHitList))
                 {
-                    foreach(RaycastHit raycastHit in raycastHitList)
+                    foreach (RaycastHit raycastHit in raycastHitList)
                     {
-                        if(raycastHit.Entity == target.ValueRO.targetEntity)
+                        if (raycastHit.Entity == target.ValueRO.targetEntity)
                         {
-                            // RAYCAST HIT TARGET, CLOSE ENOUGH TO ATTACK
+                            // Raycast hit target, close enough to attack this entity
                             isTouchingTarget = true;
                             break;
                         }
@@ -68,28 +72,35 @@ partial struct MeleeAttackSystem : ISystem
                 }
             }
 
-            if(!isCloseEnoughToAttack && !isTouchingTarget)
+            if (!isCloseEnoughToAttack && !isTouchingTarget)
             {
-                // TARGET IS TOO FAR
+                // Target is too far
                 targetPositionPathQueued.ValueRW.targetPosition = targetLocalTransform.Position;
                 targetPositionPathQueuedEnabled.ValueRW = true;
             }
             else
             {
-                // TARGET IS CLOSE ENOUGH - ATTACK
+                // Target is close enough to attack
                 targetPositionPathQueued.ValueRW.targetPosition = localTransform.ValueRO.Position;
                 targetPositionPathQueuedEnabled.ValueRW = true;
 
                 meleeAttack.ValueRW.timer -= SystemAPI.Time.DeltaTime;
-                if(meleeAttack.ValueRO.timer > 0) { continue; }
+                if (meleeAttack.ValueRO.timer > 0)
+                {
+                    continue;
+                }
                 meleeAttack.ValueRW.timer = meleeAttack.ValueRO.timerMax;
 
                 RefRW<Health> targetHealth = SystemAPI.GetComponentRW<Health>(target.ValueRO.targetEntity);
                 targetHealth.ValueRW.healthAmount -= meleeAttack.ValueRO.damageAmount;
                 targetHealth.ValueRW.onHealthChanged = true;
+                targetHealth.ValueRW.onTookDamage = true;
 
                 meleeAttack.ValueRW.onAttacked = true;
             }
         }
     }
+
+
+
 }

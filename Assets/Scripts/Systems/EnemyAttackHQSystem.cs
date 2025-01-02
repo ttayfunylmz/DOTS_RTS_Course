@@ -5,6 +5,8 @@ using Unity.Transforms;
 
 partial struct EnemyAttackHQSystem : ISystem
 {
+
+
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
@@ -17,21 +19,28 @@ partial struct EnemyAttackHQSystem : ISystem
         Entity hqEntity = SystemAPI.GetSingletonEntity<BuildingHQ>();
         float3 hqPosition = SystemAPI.GetComponent<LocalTransform>(hqEntity).Position;
 
-        foreach((
+        foreach ((
             RefRO<EnemyAttackHQ> enemyAttackHQ,
             RefRW<TargetPositionPathQueued> targetPositionPathQueued,
             EnabledRefRW<TargetPositionPathQueued> targetPositionPathQueuedEnabled,
             RefRO<Target> target)
-                in SystemAPI.Query<
-                    RefRO<EnemyAttackHQ>,
-                    RefRW<TargetPositionPathQueued>,
-                    EnabledRefRW<TargetPositionPathQueued>,
-                    RefRO<Target>>().WithDisabled<MoveOverride>().WithPresent<TargetPositionPathQueued>())
+            in SystemAPI.Query<
+                RefRO<EnemyAttackHQ>,
+                RefRW<TargetPositionPathQueued>,
+                EnabledRefRW<TargetPositionPathQueued>,
+                RefRO<Target>>().WithDisabled<MoveOverride>().WithPresent<TargetPositionPathQueued>())
         {
-            if(target.ValueRO.targetEntity != Entity.Null) { continue; }
+
+            if (target.ValueRO.targetEntity != Entity.Null)
+            {
+                continue;
+            }
 
             targetPositionPathQueued.ValueRW.targetPosition = hqPosition;
             targetPositionPathQueuedEnabled.ValueRW = true;
         }
+
     }
+
+
 }

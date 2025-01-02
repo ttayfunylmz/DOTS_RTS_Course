@@ -6,6 +6,8 @@ using Unity.Transforms;
 
 partial struct ZombieSpawnerSystem : ISystem
 {
+
+
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
@@ -21,23 +23,22 @@ partial struct ZombieSpawnerSystem : ISystem
         CollisionWorld collisionWorld = physicsWorldSingleton.CollisionWorld;
         NativeList<DistanceHit> distanceHitList = new NativeList<DistanceHit>(Allocator.Temp);
 
-        EntityCommandBuffer entityCommandBuffer 
-            = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+        EntityCommandBuffer entityCommandBuffer =
+            SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
         foreach ((
             RefRO<LocalTransform> localTransform,
             RefRW<ZombieSpawner> zombieSpawner)
-                in SystemAPI.Query<
-                    RefRO<LocalTransform>,
-                    RefRW<ZombieSpawner>>())
+            in SystemAPI.Query<
+                RefRO<LocalTransform>,
+                RefRW<ZombieSpawner>>())
         {
-            zombieSpawner.ValueRW.timer -= SystemAPI.Time.DeltaTime;
 
-            if(zombieSpawner.ValueRO.timer > 0f)
+            zombieSpawner.ValueRW.timer -= SystemAPI.Time.DeltaTime;
+            if (zombieSpawner.ValueRO.timer > 0f)
             {
                 continue;
             }
-
             zombieSpawner.ValueRW.timer = zombieSpawner.ValueRO.timerMax;
 
             distanceHitList.Clear();
@@ -49,25 +50,27 @@ partial struct ZombieSpawnerSystem : ISystem
             };
 
             int nearbyZombieAmount = 0;
-            if(collisionWorld.OverlapSphere(localTransform.ValueRO.Position,
+            if (collisionWorld.OverlapSphere(
+                localTransform.ValueRO.Position,
                 zombieSpawner.ValueRO.nearbyZombieAmountDistance,
                 ref distanceHitList,
                 collisionFilter))
             {
-                foreach(DistanceHit distanceHit in distanceHitList)
+
+                foreach (DistanceHit distanceHit in distanceHitList)
                 {
-                    if(!SystemAPI.Exists(distanceHit.Entity))
+                    if (!SystemAPI.Exists(distanceHit.Entity))
                     {
                         continue;
                     }
-                    if(SystemAPI.HasComponent<Unit>(distanceHit.Entity) && SystemAPI.HasComponent<Zombie>(distanceHit.Entity))
+                    if (SystemAPI.HasComponent<Unit>(distanceHit.Entity) && SystemAPI.HasComponent<Zombie>(distanceHit.Entity))
                     {
                         nearbyZombieAmount++;
                     }
                 }
             }
 
-            if(nearbyZombieAmount >= zombieSpawner.ValueRO.nearbyZombieAmountMax)
+            if (nearbyZombieAmount >= zombieSpawner.ValueRO.nearbyZombieAmountMax)
             {
                 continue;
             }
@@ -85,4 +88,5 @@ partial struct ZombieSpawnerSystem : ISystem
             });
         }
     }
+
 }

@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b21a3f9a0e046e468349ba9742ece2f, type: 3}
+  m_Script: {fileID: 11500000, guid: 126d9ac176964a54bb72263070596466, type: 3}
   m_Name: None
   m_EditorClassIdentifier: 
   animationType: 0
-  meshArray: []
-  frameTimerMax: 0
+  meshArray:
+  - {fileID: 4300000, guid: 3e67c8e712f2b5040aaaeb8eb2492345, type: 2}
+  frameTimerMax: 0.5

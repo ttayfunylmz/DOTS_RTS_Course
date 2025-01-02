@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 211200bbf4b151a4eb668e25856b5b7d
+guid: 8cfb9cdd2a0cb764cbd348a144814b7e
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -21,7 +21,7 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
     flipGreenChannel: 0
-  isReadable: 0
+  isReadable: 1
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
@@ -138,8 +138,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 09a67e64d7e1db742b6be6545d3d75f6
-      internalID: -1697265814
+      spriteID: d8c9c9b0a7c55d04c9a87e8dd7851ec6
+      internalID: 419190866
       vertices: []
       indices: 
       edges: []
@@ -160,8 +160,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0b89738ddcaf7004dbf0849c1ccc1b38
-      internalID: -1310278123
+      spriteID: 838b7cbc7b6f8e44e80b7bcdcda6ac6e
+      internalID: -822674795
       vertices: []
       indices: 
       edges: []
@@ -182,8 +182,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 725fe39d18b4b2347864b2de0bee355b
-      internalID: 929149825
+      spriteID: 901b8e525b0cdac4cbaf5a66fe1180f3
+      internalID: 510806051
       vertices: []
       indices: 
       edges: []
@@ -204,8 +204,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8e8d7107b6e927c498c293ac5c2996d4
-      internalID: 1245481779
+      spriteID: 434ad5740de10014b9988b2a47702cd3
+      internalID: 520980359
       vertices: []
       indices: 
       edges: []
@@ -226,8 +226,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2c356a343dc1187458cf03bb4dec86d8
-      internalID: -1300940956
+      spriteID: e207b0456a6fef04bad60ce16c925023
+      internalID: 2065974681
       vertices: []
       indices: 
       edges: []
@@ -248,8 +248,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f7f500128fa02f043ad2d0c10f94f417
-      internalID: -170603444
+      spriteID: 20e01a31ebb024042ad6079db2adf0d5
+      internalID: 615564373
       vertices: []
       indices: 
       edges: []
@@ -270,8 +270,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9399e5f021296fb4aa08bd82f131cfbd
-      internalID: -270933710
+      spriteID: e7748e47b9a16114a8f29d9b3e1dbbff
+      internalID: 2035429332
       vertices: []
       indices: 
       edges: []
@@ -292,8 +292,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1d6b532e008e0e54086c2d6af80161f0
-      internalID: -361991382
+      spriteID: b18c0c536e124b242904528d4ebea740
+      internalID: -1371484945
       vertices: []
       indices: 
       edges: []
@@ -314,8 +314,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 272c58a9e96814d40bd3a738e844999f
-      internalID: -1916107286
+      spriteID: c3221fada68180f4f8050ababb22820c
+      internalID: 1673548822
       vertices: []
       indices: 
       edges: []
@@ -336,8 +336,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 281444ae04c36f944a54f5b962d977fa
-      internalID: 524290584
+      spriteID: 32d7131c53ca388448ca9b510f4f2a70
+      internalID: -1343823098
       vertices: []
       indices: 
       edges: []
@@ -346,7 +346,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 3795b40558355f34f8c9013ae9204123
+    spriteID: 21e500c8b5f507f4b89b3f33651c41c1
     internalID: 0
     vertices: []
     indices: 
@@ -356,16 +356,16 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Buttons_0: -1697265814
-      Buttons_1: -1310278123
-      Buttons_2: 929149825
-      Buttons_3: 1245481779
-      Buttons_4: -1300940956
-      Buttons_5: -170603444
-      Buttons_6: -270933710
-      Buttons_7: -361991382
-      Buttons_8: -1916107286
-      Buttons_9: 524290584
+      Buttons_0: 419190866
+      Buttons_1: -822674795
+      Buttons_2: 510806051
+      Buttons_3: 520980359
+      Buttons_4: 2065974681
+      Buttons_5: 615564373
+      Buttons_6: 2035429332
+      Buttons_7: -1371484945
+      Buttons_8: 1673548822
+      Buttons_9: -1343823098
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
